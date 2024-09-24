@@ -1,0 +1,19 @@
+<!-- views/data.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB Query Testing</title>
+</head>
+<body>
+    <h2>DB Query Testing: <%= data.date %></h2>
+    <ul>
+        <li><strong>Date:</strong> <%= data.date %></li>        
+        <li><strong>Actual:</strong> <%= data.actual.toLocaleString() %></li>
+        <li><strong>Prediction:</strong> <%= Math.round(data.prediction).toLocaleString() %></li>
+        <li><strong>Difference:</strong> <%= Math.round(data.difference).toLocaleString() %></li>
+    </ul>
+</body>
+</html>
