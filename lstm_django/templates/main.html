@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        h1 { margin-top: 20px; font-size: 30px; }
+        body { text-align: center; margin: 0; position: relative; }
+        #date { font-size: 14px; font-weight: bold; }
+        #btn_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        #btn_predict, #btn_history {
+            margin: 0 10px;
+            margin-top: 0;
+            padding: 6px 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #000000; 
+            border-radius: 4px;
+            color: black;
+            cursor: pointer;
+        }
+        #btn_predict:hover, #btn_history:hover {
+            background-color: #e2e6ea;
+        }
+        #graph_ss { padding: 3px; padding-top: 0; padding-bottom: 0; }
+        #graph_title {
+            font-size: 18px;
+            font-weight: bold;
+            padding-bottom: 0;
+            padding-top: 5px; 
+        }
+        .navbar-nav {
+            flex-direction: column;
+        }
+        @media (min-width: 992px) {
+            .navbar-nav {
+                flex-direction: row;
+            }
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #e2e6ea; 
+        }
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'stock.png' %}" alt="Logo">
+            LSTM
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Main</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showLoading()">Predict</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/lstm/history/">History</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <h1>LSTM 모델을 이용한 주가 예측</h1>
+    <p id="date">Today: {{ today|date:"Y.m.d.D" }}</p>
+
+    <p id="graph_title">최근 삼성전자 실제 주가</p>
+
+    {% if ss_graph %}
+    <img id="graph_ss" src="data:image/png;base64,{{ ss_graph }}" alt="SS Graph">
+    {% endif %}
+
+    <div id="btn_container">
+        <button id="btn_predict" onclick="showLoading()">Predict</button>
+        <button id="btn_history" onclick="location.href='/lstm/history/'">History</button>
+    </div>
+
+    <div id="overlay">Loading...</div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('overlay').style.display = 'flex';
+            setTimeout(function() {
+                window.location.href = '/lstm/predict/';
+            }, 100); 
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
