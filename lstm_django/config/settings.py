@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     'lstm',
+    "django_extensions",
+    "rest_framework",
+    "django_cron",
 ]
 
 MIDDLEWARE = [
