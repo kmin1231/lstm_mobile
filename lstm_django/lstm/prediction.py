@@ -1,4 +1,4 @@
-import io, os, base64
+import io, base64
 import FinanceDataReader as fdr
 import pandas as pd
 import numpy as np
@@ -14,8 +14,6 @@ from keras.layers import LSTM, Dense, Dropout, Flatten
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from scipy.interpolate import splrep, splev
-from google.cloud import firestore
-
 
 predict_start = '2024-01-01'
 
@@ -215,9 +213,3 @@ def calculate_accuracy(predictions):
             monthly_accuracy[month] = 0
 
     return monthly_accuracy
-
-
-
-if __name__ == '__main__':
-    today = datetime.today()
-    print(today)
