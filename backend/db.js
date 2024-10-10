@@ -11,7 +11,9 @@ const router = express.Router();
 // app.set('views', path.join(__dirname, 'views'));
 
 // Database Connection
-const db = new sqlite3.Database('./db_240924.sqlite3', (err) => {
+const dbPath = path.join(__dirname, '../lstm_django/db.sqlite3');
+
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Database Connection Failure:', err.message);
     } else {

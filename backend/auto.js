@@ -4,13 +4,17 @@ const axios = require('axios');
 const { exec } = require('child_process');
 
 const runPythonScript = () => {
-    const command = 'python manage.py run_command';
+    const commands = [
+        'python manage.py runserver',
+        'python manage.py run_command'
+    ];
+    
     const options = {
         cwd: '../lstm_django',
         shell: true
     };
 
-    exec(command, options, (error, stdout, stderr) => {
+    exec(commands, options, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing command: ${error.message}`);
             return;

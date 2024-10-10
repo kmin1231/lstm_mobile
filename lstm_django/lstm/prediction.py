@@ -18,7 +18,8 @@ from scipy.interpolate import splrep, splev
 predict_start = '2024-01-01'
 
 def getprediction():
-    model2 = load_model('C:\\Users\\min\\Desktop\\lstm\\lstm\\lstm_model.h5')
+    model2 = load_model('D:\\dev\\lstm_mobile\\lstm_django\\lstm\\lstm_model.h5')
+    
 
     time_step = 10
     epochs = 100
@@ -47,7 +48,9 @@ def getprediction():
             df_ss_common = df_ss[df_ss.index.isin(df_ks.index)]
             df_ks_common = df_ks[df_ks.index.isin(df_ss.index)]
 
+            df_ss_common = df_ss_common.copy()
             df_ss_common.dropna(inplace=True)
+            df_ks_common = df_ks_common.copy()
             df_ks_common.dropna(inplace=True)
 
             if df_ss_common.empty:
