@@ -112,6 +112,9 @@ app.post('/save-to-firestore', async (req, res) => {
 
         await Promise.all(promises);
         console.log('Data saved successfully to Firestore!');
+
+        await integerValues();
+
         res.status(200).send('Data saved to Firestore successfully!'); // HTTP200: OK
     } catch (error) {
         console.error('Error saving to Firestore:', error);
@@ -158,13 +161,14 @@ async function integerValues() {
     console.log('integerValues function called');
 
     const collectionRef = firestoreDb.collection('lstm_prediction'); // collection name
-    let query = collectionRef;
+    // let query = collectionRef;
+    const snapshot = await collectionRef.get();
 
-    if (date) {
-        query = collectionRef.where('date', '>=', date);
-    }
+    // if (date) {
+    //     query = collectionRef.where('date', '>=', date);
+    // }
 
-    const snapshot = await query.get();
+    // const snapshot = await query.get();
     //  collectionRef.get(); // object 'snapshot'
 
     if (snapshot.empty) {
