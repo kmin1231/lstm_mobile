@@ -20,7 +20,6 @@ predict_start = '2024-01-01'
 def getprediction():
     model2 = load_model('D:\\dev\\lstm_mobile\\lstm_django\\lstm\\lstm_model.h5')
     
-
     time_step = 10
     epochs = 100
     batch_size = 8

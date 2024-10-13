@@ -113,7 +113,7 @@ app.post('/save-to-firestore', async (req, res) => {
         await Promise.all(promises);
         console.log('Data saved successfully to Firestore!');
 
-        await integerValues();
+        // await integerValues();
 
         res.status(200).send('Data saved to Firestore successfully!'); // HTTP200: OK
     } catch (error) {

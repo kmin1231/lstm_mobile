@@ -11,9 +11,6 @@ from datetime import date, datetime, timedelta
 from django.conf import settings
 from .prediction import getprediction, predict_graph, history_data, calculate_accuracy, predict_start
 
-# def index(request):
-#     return HttpResponse("testing...!")
-
 
 def index(request):
     today = date.today()
