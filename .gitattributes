@@ -1,4 +1,4 @@
 *.json text eol=lf
 *.gitignore text eol=lf
 lstm_django/lstm/get-pip.py linguist-detectable=false
-**/migrations/** linguist-vendored
+**/migrations/** linguist-detectable=false
