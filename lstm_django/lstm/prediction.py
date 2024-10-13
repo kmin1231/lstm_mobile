@@ -2,17 +2,14 @@ import io, base64
 import FinanceDataReader as fdr
 import pandas as pd
 import numpy as np
-from .models import SS, load_ss, Prediction
+from .models import SS, Prediction
 from datetime import datetime, timedelta
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense, Dropout, Flatten
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from keras.models import load_model
 from scipy.interpolate import splrep, splev
 
 predict_start = '2024-01-01'
@@ -139,7 +136,6 @@ def predict_graph():
     plt.xlabel('Date')
     plt.ylabel('Price')
     plt.xticks(rotation=30)
-    # plt.yticks(np.arange(74000, 82000, 1000)) 
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
