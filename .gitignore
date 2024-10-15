@@ -1,2 +1,11 @@
 __pycache__/
 *.pyc
+migrations/
+*.log
+.env
+.vscode/
+.idea/
+*.swp
+venv/
+env/
+.env/
