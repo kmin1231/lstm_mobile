@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'responsive_layout.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,75 +9,44 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    // final screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: Color(0xFF06172B),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Header(),
-            Items(),
-          ],
+      backgroundColor: Color(0xFF181A1F),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+            // Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'PrediTock',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: 0),
+                Items(),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
-
-class Header extends StatelessWidget {
-  // final double screenWidth;
-  // Header({required this.screenWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 360, height: 48,
-      color: Colors.transparent,
-      // width: screenWidth, // width: 320,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('lib/assets/images/colored_logo.png'),
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-            ),
-            SizedBox(width: 18), // margin between logo & text
-            Text(
-              'LSTM Mobile',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.marhey(
-                color: Color.fromRGBO(218, 218, 218, 1),
-                fontSize: 27,
-                letterSpacing: 0,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 
 class Items extends StatefulWidget {
-  // final double screenHeight;
-  // Items({required this.screenHeight});
-
   @override
   _ItemsState createState() => _ItemsState();
 }
-
 
 class _ItemsState extends State<Items> {
   final List<String> stockTicker = [
@@ -110,21 +78,13 @@ class _ItemsState extends State<Items> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: double.infinity,
-      // height: widget.screenHeight,
-      // margin: EdgeInsets.all(10),
-      // padding: EdgeInsets.all(10),
-      width: 320, height: 650,
+      width: 285,
       decoration: BoxDecoration(
-        color: Color.fromRGBO(0, 0, 0, 0),
+        color: Colors.transparent,
       ),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          childAspectRatio: 5.8,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 0,
-        ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: stockNames.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
@@ -137,45 +97,50 @@ class _ItemsState extends State<Items> {
               );
             },
             child: Container(
-              height: 52,
+              height: 50,
+              margin: EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                borderRadius: BorderRadius.circular(7),
+                color: Color(0xFF32343a),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 children: <Widget>[
                   Container(
-                    width: 100, height: 54,
+                    width: 105,
+                    height: 70,
                     alignment: Alignment.center,
                     child: Container(
                       width: 80,
-                      height: 40,
+                      height: 28,
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(238, 242, 248, 1), // EEF2F8
+                        // color: Color.fromRGBO(238, 242, 248, 1), // EEF2F8
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.circular(80),
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         stockTicker[index],
                         style: GoogleFonts.inter(
-                          color: Color.fromRGBO(0, 94, 238, 1), // 005CEE
-                          fontSize: 17,
+                          // color: Color.fromRGBO(0, 94, 238, 1), // 005CEE
+                          color: Color(0xFF9bc9e9),
+                          fontSize: 16,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 0), // between ticker & stockName
                   Expanded(
                     child: Container(
-                      height: 54,
+                      height: 70,
                       alignment: Alignment.centerLeft,
                       child: Text(
                         stockNames[index],
                         textAlign: TextAlign.left,
                         style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: 20,
+                          color: Colors.white,
+                          // color: Color(0xFF9bc9e9),
+                          fontSize: 19,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -191,8 +156,6 @@ class _ItemsState extends State<Items> {
   }
 }
 
-
-// should be changed into 'stateful'
 class DetailScreen extends StatelessWidget {
   final String stockName;
 
@@ -202,14 +165,32 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(stockName),
-          backgroundColor: Color.fromRGBO(238, 242, 255, 1),
+        backgroundColor: Color(0xFF181A1F),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Row(
+          children: [
+            Text(
+              stockName,
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(width: 10),
+          ],
+        ),
       ),
-      backgroundColor: Color(0xFF06172B),
+      backgroundColor: Color(0xFF181A1F),
       body: Center(
         child: Text(
-          'Here is detailed page for $stockName.',
-          style: TextStyle(fontSize: 24),
+          'Detailed page for $stockName',
+          style: TextStyle(
+            fontSize: 22,
+            color: Color(0xffffffff),
+          ),
         ),
       ),
     );

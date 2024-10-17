@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-
-import 'responsive_layout.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'splash_screen.dart';
 import 'home_screen.dart';
 
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async {
-  await dotenv.load(fileName: ".env");
+void main() {
+  // await dotenv.load(fileName: ".env");
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   runApp(const MyApp());
@@ -17,54 +17,40 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the 'root' of the application.
+  // This widget is the 'root' of the application!
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LSTM Mobile',
+      title: 'PrediTock',
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
+        '/': (context) => SplashScreen(title: 'PrediTock'),
         '/home': (context) => HomeScreen(),
       },
-
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
 
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class SplashScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed('/home');
-    });
-
-    return Scaffold(
-      body: Center(
-        child: Image.asset(
-          'lib/assets/images/splash_image.png', // image path
-          fit: BoxFit.cover,
-          width: 360, height: 780,
-        ),
-      ),
-    );
-  }
-}
+// class SplashScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     Future.delayed(Duration(seconds: 2), () {
+//       Navigator.of(context).pushReplacementNamed('/home');
+//     });
+//
+//     return Scaffold(
+//       body: Center(
+//         child: Image.asset(
+//           'assets/images/stock_chart.png', // image path
+//           fit: BoxFit.cover,
+//           width: 360, height: 780,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 
 // class MyHomePage extends StatefulWidget {
