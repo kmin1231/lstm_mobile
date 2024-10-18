@@ -2,6 +2,7 @@
 *.gitignore text eol=lf
 lstm_django/lstm/get-pip.py linguist-detectable=false
 lstm_django/lstm/migrations/** linguist-vendored
+lstm_django/lstm/migrations/* linguist-vendored
 frontend/windows/** linguist-vendored
 frontend/linux/** linguist-vendored
 frontend/ios/** linguist-vendored
