@@ -279,7 +279,7 @@ app.post('/update-integer-values/:date', async (req, res) => {
 
     try {
         await integerSpecific(date);
-        res.status(200).send('Integer values updated successfully for data after ${date}');
+        res.status(200).send(`Integer values updated successfully for data after ${date}`);
     } catch (error) {
         console.error('Error updating integer values:', error);
         res.status(500).send('Error updating integer values: ' + error.message);
