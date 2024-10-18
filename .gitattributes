@@ -4,3 +4,5 @@ lstm_django/lstm/get-pip.py linguist-detectable=false
 **/migrations/** linguist-detectable=false
 frontend/windows/** linguist-vendored
 frontend/linux/** linguist-vendored
+frontend/ios/** linguist-vendored
+frontend/macos/** linguist-vendored
