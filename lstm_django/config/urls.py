@@ -24,4 +24,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('lstm/', include('lstm.urls')),
     path('calendar_prediction/', views.calendar_prediction, name='calendar_prediction'),
+
+    path('api/', include('lstm.urls'))
 ]

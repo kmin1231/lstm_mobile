@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework",
     "django_cron",
+    "fin_api",
 ]
 
 MIDDLEWARE = [

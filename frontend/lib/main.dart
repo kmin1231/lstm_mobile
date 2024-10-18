@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'splash_screen.dart';
 import 'home_screen.dart';
-
+import 'dart:io';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() {
-  // await dotenv.load(fileName: ".env");
+  // print(Directory.current.path);
   // WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   runApp(const MyApp());
@@ -25,7 +23,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(title: 'PrediTock'),
-        '/home': (context) => HomeScreen(),
+        '/home': (context) => HomeScreen(stockTicker: '005930'),
+        '/detail': (context) => DetailScreen(stockName: '', stockTicker: ''),
       },
 
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),

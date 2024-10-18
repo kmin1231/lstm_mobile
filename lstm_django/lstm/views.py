@@ -1,5 +1,5 @@
 import os, io, base64,sys
-sys.path.append('C:\\Users\\min\\Desktop\\lstm\\lstm')
+sys.path.append('D:\\dev\\lstm_mobile\\lstm_django\\lstm')
 from django.shortcuts import render
 # from django.http import HttpResponse
 from django.http import JsonResponse
@@ -32,7 +32,6 @@ def history(request):
     }
     return render(request, 'history.html', context)
 
-
 def plot_ss():
     today = date.today()
     end_date = today
@@ -50,7 +49,6 @@ def plot_ss():
     plt.plot(dates, close, label='Close Price', color='#e35f62')
     plt.xlabel('Date')
     plt.ylabel('Close')
-    # plt.title('최근 삼성전자 실제 주가')
 
     max_close = max(close)
     min_close = min(close)
@@ -79,7 +77,6 @@ end_date = datetime.now().strftime('%Y-%m-%d')
 load_ss(start_date='2022-01-01', end_date=end_date)
 load_ks(start_date='2022-01-01', end_date=end_date)
 
-
 def calendar_prediction(request):
     date = request.GET.get('date')
     print('Requested date:', date)
@@ -94,3 +91,41 @@ def calendar_prediction(request):
     except Prediction.DoesNotExist:
         print('Prediction not found for date:', date)
         return JsonResponse({'error': 'Prediction not found for the given date'}, status=404)
+    
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from fin_api.kis import fetch_stock_price
+
+# class StockPriceView(APIView):
+#     def get(self, request, stock_code):
+#         stock_data = fetch_stock_price(stock_code)
+#         if stock_data and 'output' in stock_data:
+#             current_price = stock_data['output'].get('stck_prpr')
+#             return Response({'price': current_price}, status=status.HTTP_200_OK)
+#         return Response({'error': 'Price not found'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.http import JsonResponse
+
+def stock_price_view(request, stock_code):
+    price_data = fetch_stock_price(stock_code)
+    if price_data:
+        return JsonResponse(price_data, safe=False)
+    else:
+        return JsonResponse({'error': 'Could not fetch price'}, status=404)
+    
+class StockPriceView(APIView):
+    def get(self, request, stock_code):
+        stock_data = fetch_stock_price(stock_code)
+
+        if stock_data and 'output' in stock_data:
+            current_price = stock_data['output'].get('stck_prpr')
+            if current_price is not None:
+                # return Response({'output': {'stck_prpr': current_price}}, status=status.HTTP_200_OK)
+                return Response({'stock_code': stock_code, 'price': current_price}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Current price not found'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'error': 'Could not fetch stock data'}, status=status.HTTP_404_NOT_FOUND)

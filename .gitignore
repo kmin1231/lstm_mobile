@@ -9,3 +9,6 @@ migrations/
 venv/
 env/
 .env/
+kis.key
+access_token.txt
+token.dat

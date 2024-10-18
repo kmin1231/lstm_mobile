@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+// import 'item_main_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  final String stockTicker;
+
+  HomeScreen({required this.stockTicker});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const String fontTitle = 'Lexend';
+  // String price = '';
+
   @override
   Widget build(BuildContext context) {
+    const String screenName = 'PrediTock';
+    const Color backgroundColor = Color(0xFF181A1F);
+
     return Scaffold(
-      backgroundColor: Color(0xFF181A1F),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -22,8 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         title: Text(
-          'PrediTock',
-          style: TextStyle(color: Colors.white),
+          screenName,
+          style: GoogleFonts.getFont(
+              fontTitle,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SafeArea(
@@ -49,7 +66,7 @@ class Items extends StatefulWidget {
 }
 
 class _ItemsState extends State<Items> {
-  final List<String> stockTicker = [
+  final List<String> stockTickers = [
     '005930', // 삼성전자
     '000660', // SK하이닉스
     '373220', // LG에너지솔루션
@@ -75,10 +92,15 @@ class _ItemsState extends State<Items> {
     'POSCO홀딩스',
   ];
 
+  static const String fontItem = 'IBM Plex Sans KR';
+  static const String fontTicker = 'Lato';
+
   @override
   Widget build(BuildContext context) {
+    const Color backgroundColor = Color(0xFF181A1F);
+
     return Container(
-      width: 285,
+      width: 288,
       decoration: BoxDecoration(
         color: Colors.transparent,
       ),
@@ -92,7 +114,10 @@ class _ItemsState extends State<Items> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailScreen(stockName: stockNames[index]),
+                  builder: (context) => DetailScreen(
+                      stockName: stockNames[index],
+                      stockTicker: stockTickers[index],
+                  ),
                 ),
               );
             },
@@ -119,12 +144,13 @@ class _ItemsState extends State<Items> {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        stockTicker[index],
-                        style: GoogleFonts.inter(
+                        stockTickers[index],
+                        style: GoogleFonts.getFont(
+                          fontTicker,
                           // color: Color.fromRGBO(0, 94, 238, 1), // 005CEE
                           color: Color(0xFF9bc9e9),
                           fontSize: 16,
-                          fontWeight: FontWeight.normal,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -137,10 +163,11 @@ class _ItemsState extends State<Items> {
                       child: Text(
                         stockNames[index],
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.getFont(
+                          fontItem,
                           color: Colors.white,
                           // color: Color(0xFF9bc9e9),
-                          fontSize: 19,
+                          fontSize: 20,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -156,42 +183,97 @@ class _ItemsState extends State<Items> {
   }
 }
 
-class DetailScreen extends StatelessWidget {
-  final String stockName;
 
-  DetailScreen({ required this.stockName });
+class DetailScreen extends StatefulWidget {
+  final String stockName;
+  final String stockTicker;
+
+  // DetailScreen({required this.stockTicker, required this.stockName});
+  const DetailScreen({
+    Key? key,
+    required this.stockName,
+    required this.stockTicker,
+  }) : super(key: key);
+
+  @override
+  _DetailScreenState createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  String price = " (loading...) ";  // default
+  static const String fontTitle = 'Lexend';
+  static const String fontItem = 'IBM Plex Sans KR';
+  // late StockPriceFetcher fetcher;
 
   @override
   Widget build(BuildContext context) {
+    const Color backgroundColor = Color(0xFF181A1F);
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFF181A1F),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            // Navigator.pushReplacementNamed(context, '/home');
             Navigator.pop(context);
           },
         ),
-        title: Row(
-          children: [
-            Text(
-              stockName,
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(width: 10),
-          ],
-        ),
-      ),
-      backgroundColor: Color(0xFF181A1F),
-      body: Center(
-        child: Text(
-          'Detailed page for $stockName',
-          style: TextStyle(
-            fontSize: 22,
-            color: Color(0xffffffff),
+        title: Text(
+          "${widget.stockName}",
+          style: GoogleFonts.getFont(
+            fontTitle,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+      body: Column(
+        // padding: const EdgeInsets.all(16.0),
+        // child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+          // mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 50),
+
+          Center(
+            child: Text(
+              "Stock Name: ${widget.stockName}",
+              style: GoogleFonts.getFont(
+                  fontItem,
+                  color: Colors.white,
+                  fontSize: 23),
+              // textAlign: TextAlign.center,
+            ),
+          ),
+
+          SizedBox(height: 16),
+
+          Center(
+            child: Text(
+              "Stock Ticker: ${widget.stockTicker}",
+              style: GoogleFonts.getFont(
+                  fontItem,
+                  color: Colors.white,
+                  fontSize: 23),
+            ),
+          ),
+
+          SizedBox(height: 16),
+
+          Center(
+            child: Text(
+              "Current Price: $price원",
+              style: GoogleFonts.getFont(
+                  fontItem,
+                  color: Colors.white,
+                  fontSize: 23),
+            ),
+          ),
+        ],
       ),
     );
   }
