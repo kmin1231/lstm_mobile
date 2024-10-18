@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+lstm/migrations/
 migrations/
 *.log
 .env
