@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'item_main_screen.dart';
+import 'dart:async';
+import 'graph_widget.dart';
+import 'stock_price.dart';
+import 'package:dio/dio.dart';
 
 class HomeScreen extends StatefulWidget {
   final String stockTicker;
@@ -200,10 +203,45 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  String price = " (loading...) ";  // default
+  // String price = " (loading...) ";  // default
+  String price = ' ';
   static const String fontTitle = 'Lexend';
   static const String fontItem = 'IBM Plex Sans KR';
-  // late StockPriceFetcher fetcher;
+  late StockPriceFetcher fetcher;
+  Completer<void>? _fetchPriceCompleter;
+
+  @override
+  void initState() {
+    super.initState();
+    fetcher = StockPriceFetcher();
+    fetchPrice();
+  }
+
+  // @override
+  // void dispose() {
+  //   _fetchPriceCompleter?.complete();
+  //   super.dispose();
+  // }
+
+  Future<void> fetchPrice() async {
+    print("Fetching price for ${widget.stockTicker}");
+    _fetchPriceCompleter = Completer<void>();
+    try {
+      String fetchedPrice = await fetcher.getPrice(widget.stockTicker);
+      if (mounted) {
+        setState(() {
+          price = fetchedPrice;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          price = " ? ";
+        });
+      }
+      print("Error: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,6 +311,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   fontSize: 23),
             ),
           ),
+          SizedBox(height: 16),
+          Expanded(child: GraphWidget()), // for now, same graph
         ],
       ),
     );

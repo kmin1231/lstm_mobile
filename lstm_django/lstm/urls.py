@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import stock_price_view, StockPriceView
+from .views import StockPriceView
 
 urlpatterns = [
     path('', views.index, name='index'),

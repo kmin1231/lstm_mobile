@@ -14,3 +14,6 @@ kis.key
 access_token.txt
 token.dat
 config.ini
+firebase_options.dart
+google-services.json
+firebase.json

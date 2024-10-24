@@ -98,23 +98,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from fin_api.kis import fetch_stock_price
-
-# class StockPriceView(APIView):
-#     def get(self, request, stock_code):
-#         stock_data = fetch_stock_price(stock_code)
-#         if stock_data and 'output' in stock_data:
-#             current_price = stock_data['output'].get('stck_prpr')
-#             return Response({'price': current_price}, status=status.HTTP_200_OK)
-#         return Response({'error': 'Price not found'}, status=status.HTTP_404_NOT_FOUND)
-
-from django.http import JsonResponse
-
-def stock_price_view(request, stock_code):
-    price_data = fetch_stock_price(stock_code)
-    if price_data:
-        return JsonResponse(price_data, safe=False)
-    else:
-        return JsonResponse({'error': 'Could not fetch price'}, status=404)
     
 class StockPriceView(APIView):
     def get(self, request, stock_code):
@@ -124,7 +107,10 @@ class StockPriceView(APIView):
             current_price = stock_data['output'].get('stck_prpr')
             if current_price is not None:
                 # return Response({'output': {'stck_prpr': current_price}}, status=status.HTTP_200_OK)
-                return Response({'stock_code': stock_code, 'price': current_price}, status=status.HTTP_200_OK)
+                return Response({
+                    'stock_code': stock_code,
+                    'price': current_price
+                    }, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Current price not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
