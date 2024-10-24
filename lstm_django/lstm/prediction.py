@@ -78,6 +78,7 @@ def getprediction():
                 predicted_data = scaler_ss.inverse_transform(predicted_data_scaled)
                 prediction = predicted_data[-1][0]
 
+                prediction = round(prediction, -2)
                 actual_value = ss_close[-1][0]
                 difference = actual_value - prediction
 
@@ -87,7 +88,7 @@ def getprediction():
                 print(f'Prediction for {current_date.strftime("%Y.%m.%d")} : {prediction}')
 
         except ValueError as e:
-            print(f"Skipping {current_date}: {e}")
+            # print(f"Skipping {current_date}: {e}")
             pass
 
         current_date += timedelta(days=1)

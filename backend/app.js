@@ -42,7 +42,7 @@ app.get('/firestore/data/:date', async (req, res) => {
     const date = req.params.date;
 
     try {
-        const snapshot = await firestoreDb.collection('lstm_prediction')
+        const snapshot = await firestoreDb.collection('005930_prediction')
             .where('date', '==', date).get();
 
         if (snapshot.empty) {
@@ -70,7 +70,7 @@ app.get('/firestore/data/:date', async (req, res) => {
 const saveWithCheck = async (row, retries = 3) => {
     try {
         const docId = row.date; // identifier field: 'date'
-        const docRef = firestoreDb.collection('lstm_prediction').doc(docId);
+        const docRef = firestoreDb.collection('005930_prediction').doc(docId);
 
         const docSnapshot = await docRef.get();
         if (docSnapshot.exists) {
@@ -141,7 +141,7 @@ app.post('/save-specific/:date', async (req, res) => {
         const promises = filteredRows.map(async (row) => {
             // await saveWithCheck(row);
             const docId = row.date;
-            const docRef = firestoreDb.collection('lstm_prediction').doc(docId);
+            const docRef = firestoreDb.collection('005930_prediction').doc(docId);
 
             await docRef.set(row);
         });
@@ -160,7 +160,7 @@ app.post('/save-specific/:date', async (req, res) => {
 async function integerValues() {
     console.log('integerValues function called');
 
-    const collectionRef = firestoreDb.collection('lstm_prediction'); // collection name
+    const collectionRef = firestoreDb.collection('005930_prediction'); // collection name
     // let query = collectionRef;
     const snapshot = await collectionRef.get();
 
@@ -223,8 +223,8 @@ async function integerValues() {
 async function integerSpecific(date) {
     console.log('integerSpecific function called for date:', date);
 
-    const collectionRef = firestoreDb.collection('lstm_prediction'); // 컬렉션 이름
-    const snapshot = await collectionRef.get(); // 객체 'snapshot'
+    const collectionRef = firestoreDb.collection('005930_prediction');
+    const snapshot = await collectionRef.get();
 
     if (snapshot.empty) {
         console.log('No documents found in the collection.');
