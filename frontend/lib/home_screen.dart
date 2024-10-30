@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
-import 'graph_widget.dart';
-import 'stock_price.dart';
+import 'overview_screen.dart';
+import 'package:intl/intl.dart';
+
 import 'package:dio/dio.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'overview_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String stockTicker;
@@ -18,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const String fontTitle = 'Lexend';
-  // String price = '';
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           screenName,
           style: GoogleFonts.getFont(
-              fontTitle,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            fontTitle,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -118,8 +121,8 @@ class _ItemsState extends State<Items> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => DetailScreen(
-                      stockName: stockNames[index],
-                      stockTicker: stockTickers[index],
+                    stockName: stockNames[index],
+                    stockTicker: stockTickers[index],
                   ),
                 ),
               );
@@ -186,7 +189,6 @@ class _ItemsState extends State<Items> {
   }
 }
 
-
 class DetailScreen extends StatefulWidget {
   final String stockName;
   final String stockTicker;
@@ -203,45 +205,51 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  // String price = " (loading...) ";  // default
+  late RecentData recentData;
+
   String price = ' ';
   static const String fontTitle = 'Lexend';
   static const String fontItem = 'IBM Plex Sans KR';
-  late StockPriceFetcher fetcher;
-  Completer<void>? _fetchPriceCompleter;
+
+  // late StockPriceFetcher fetcher;
+  // Completer<void>? _fetchPriceCompleter;
+
+  PageController _pageController = PageController();
+  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    fetcher = StockPriceFetcher();
-    fetchPrice();
+    // fetcher = StockPriceFetcher();
+    recentData = RecentData();
+    // fetchPrice();
+    fetchData();
   }
 
-  // @override
-  // void dispose() {
-  //   _fetchPriceCompleter?.complete();
-  //   super.dispose();
+  Future<void> fetchData() async {
+    await recentData.fetchData();
+    setState(() {});
+  }
+
+  // Future<void> fetchPrice() async {
+  //   print("Fetching price for ${widget.stockTicker}");
+  //   _fetchPriceCompleter = Completer<void>();
+  //   try {
+  //     String fetchedPrice = await fetcher.getPrice(widget.stockTicker);
+  //     if (mounted) {
+  //       setState(() {
+  //         price = fetchedPrice;
+  //       });
+  //     }
+  //   } catch (error) {
+  //     if (mounted) {
+  //       setState(() {
+  //         price = " ? ";
+  //       });
+  //     }
+  //     print("Error: $error");
+  //   }
   // }
-
-  Future<void> fetchPrice() async {
-    print("Fetching price for ${widget.stockTicker}");
-    _fetchPriceCompleter = Completer<void>();
-    try {
-      String fetchedPrice = await fetcher.getPrice(widget.stockTicker);
-      if (mounted) {
-        setState(() {
-          price = fetchedPrice;
-        });
-      }
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          price = " ? ";
-        });
-      }
-      print("Error: $error");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,49 +279,255 @@ class _DetailScreenState extends State<DetailScreen> {
       body: Column(
         // padding: const EdgeInsets.all(16.0),
         // child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
+        // crossAxisAlignment: CrossAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.start,
+        // mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 50),
-
-          Center(
-            child: Text(
-              "Stock Name: ${widget.stockName}",
-              style: GoogleFonts.getFont(
-                  fontItem,
-                  color: Colors.white,
-                  fontSize: 23),
-              // textAlign: TextAlign.center,
-            ),
+          Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                children: [
+                  Column(
+                    children: [
+                      Expanded(flex: 4, child: GraphWidget()),
+                      SizedBox(height: 7),
+                      Expanded(flex: 5, child: TableWidget()),
+                    ],
+                  ),
+                  CalendarWidget(),
+                ],
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(2, (index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                width: 12.0,
+                height: 12.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      _currentPage == index ? Color(0xFF9BC9E9) : Colors.grey,
+                ),
+              );
+            }),
           ),
-
-          SizedBox(height: 16),
-
-          Center(
-            child: Text(
-              "Stock Ticker: ${widget.stockTicker}",
-              style: GoogleFonts.getFont(
-                  fontItem,
-                  color: Colors.white,
-                  fontSize: 23),
-            ),
-          ),
-
-          SizedBox(height: 16),
-
-          Center(
-            child: Text(
-              "Current Price: $price원",
-              style: GoogleFonts.getFont(
-                  fontItem,
-                  color: Colors.white,
-                  fontSize: 23),
-            ),
-          ),
-          SizedBox(height: 16),
-          Expanded(child: GraphWidget()), // for now, same graph
         ],
+      ),
+    );
+  }
+}
+
+// SizedBox(height: 20),
+
+// Center(
+//   child: Text(
+//     "Stock Name: ${widget.stockName}",
+//     style: GoogleFonts.getFont(
+//         fontItem,
+//         color: Colors.white,
+//         fontSize: 16),
+//     // textAlign: TextAlign.center,
+//   ),
+// ),
+//
+// SizedBox(height: 10),
+//
+// Center(
+//   child: Text(
+//     "Stock Ticker: ${widget.stockTicker}",
+//     style: GoogleFonts.getFont(
+//         fontItem,
+//         color: Colors.white,
+//         fontSize: 16),
+//   ),
+// ),
+
+// SizedBox(height: 10),
+// Center(
+//   child: Text(
+//     "Current Price: $price원",
+//     style: GoogleFonts.getFont(
+//         fontItem,
+//         color: Colors.white,
+//         fontSize: 16),
+//   ),
+// ),
+
+class StockPriceFetcher {
+  Future<String> getPrice(String stockTicker) async {
+    final url = Uri.parse('http://127.0.0.1:8000/lstm/stock/$stockTicker');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final price = data['price'];
+      print('Current price: $price');
+      return data['price'].toString();
+    } else {
+      throw Exception('Failed to load stock price');
+    }
+  }
+}
+
+class CalendarWidget extends StatefulWidget {
+  @override
+  _CalendarWidgetState createState() => _CalendarWidgetState();
+}
+
+class _CalendarWidgetState extends State<CalendarWidget> {
+  DateTime? selectedDate;
+  List<DocumentSnapshot> fetchedData = [];
+
+  static const Color backgroundColor = Color(0xFF181A1F);
+  static const Color calendarBackgroundColor = Colors.white;
+  static const Color calendarTextColor = Colors.white;
+  static const Color resultTextColor = Colors.white;
+
+  Future<void> requestData(DateTime date) async {
+    try {
+      final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      print('Requesting data for date: $formattedDate');
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('005930_prediction')
+          .where('date', isEqualTo: formattedDate)
+          .get();
+
+      setState(() {
+        fetchedData = querySnapshot.docs;
+      });
+
+      print('Fetched data count: ${fetchedData.length}');
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  void _selectDate(DateTime date) {
+    setState(() {
+      selectedDate = date;
+      requestData(selectedDate!);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Select Date and Fetch Data'),
+      //   backgroundColor: backgroundColor,
+      // ),
+      body: Container(
+        color: backgroundColor,
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SizedBox(height: 5),
+            if (selectedDate != null)
+              Text(
+                'Select Date',
+                // 'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}',
+                style:
+                    TextStyle(fontSize: 18, color: calendarTextColor),
+              ),
+            SizedBox(height: 20),
+            Container(
+              height: 270,
+              width: 330,
+              decoration: BoxDecoration(
+                color: calendarBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: CalendarDatePicker(
+                initialDate: selectedDate ?? DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2101),
+                onDateChanged: (date) {
+                  _selectDate(date);
+                },
+              ),
+            ),
+            SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // children: [
+              // ElevatedButton(
+              //   onPressed: () {
+              //     setState(() {
+              //       selectedDate = null;
+              //     });
+              //   },
+              //   child: Text('Cancel'),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     if (selectedDate != null) {
+              //       requestData(selectedDate!);
+              //     }
+              //   },
+              //   child: Text('OK'),
+            ),
+            // ],
+            // ),
+            SizedBox(height: 20),
+            Expanded(
+              child: fetchedData.isEmpty
+                  ? Center(
+                      child: Text('No Data Available',
+                          style: TextStyle(color: calendarTextColor)))
+                  : ListView.builder(
+                      itemCount: fetchedData.length,
+                      itemBuilder: (context, index) {
+                        final data = fetchedData[index];
+
+                        return ListTile(
+                            title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                              Text('${data['date']}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: resultTextColor,
+                                      fontSize: 21)),
+                              SizedBox(height: 8),
+                              Container(
+                                width: 180,
+                                child: Divider(),
+                              ),
+                              Column(
+                                children: [
+                                  SizedBox(height: 5),
+                                  Text(
+                                      'Actual: ${NumberFormat('#,##0').format(data['actual'])}',
+                                      style: TextStyle(
+                                          color: resultTextColor,
+                                          fontSize: 19)),
+                                  SizedBox(height: 10),
+                                  Text(
+                                      'Prediction: ${NumberFormat('#,##0').format(data['prediction'])}',
+                                      style: TextStyle(
+                                          color: resultTextColor,
+                                          fontSize: 19)),
+                                  SizedBox(height: 10),
+                                  Text(
+                                      'Difference: ${NumberFormat('#,##0').format(data['difference'])}',
+                                      style: TextStyle(
+                                          color: resultTextColor,
+                                          fontSize: 19)),
+                                ],
+                              ),
+                            ]));
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
