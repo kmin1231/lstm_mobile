@@ -226,6 +226,13 @@ class _DetailScreenState extends State<DetailScreen> {
     fetchData();
   }
 
+  // resource management to ensure application stability
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchData() async {
     await recentData.fetchData();
     setState(() {});
