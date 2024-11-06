@@ -15,7 +15,7 @@ from scipy.interpolate import splrep, splev
 predict_start = '2024-01-01'
 
 def getprediction():
-    model2 = load_model('D:\\dev\\lstm_mobile\\lstm_django\\lstm\\lstm_model.h5')
+    model2 = load_model('D:\\dev\\lstm_mobile\\lstm_django\\lstm\\models\\lstm_model_005930.h5')
     
     time_step = 10
     epochs = 100
