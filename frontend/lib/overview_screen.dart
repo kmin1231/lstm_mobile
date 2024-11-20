@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
 class RecentData {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -26,7 +27,7 @@ class RecentData {
         .orderBy('date')
         .get();
 
-    // check whether the query works well
+    // checks whether the query works well
     // querySnapshot.docs.forEach((doc) {
     //   print(doc.data());
     // });
@@ -62,6 +63,8 @@ class GraphWidget extends StatefulWidget {
 class _GraphWidgetState extends State<GraphWidget> {
   late RecentData recentData;
 
+  final formatter = NumberFormat("#,###");
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +78,20 @@ class _GraphWidgetState extends State<GraphWidget> {
     });
   }
 
+  double _calcMaxY() {
+    double maxActual = recentData.actualData.map((spot) => spot.y).reduce(math.max);
+    double maxPrediction = recentData.predictionData.map((spot) => spot.y).reduce(math.max);
+    double overallMax = math.max(maxActual, maxPrediction);
+    return overallMax * 1.05;
+  }
+
+  double _calcMinY() {
+    double minActual = recentData.actualData.map((spot) => spot.y).reduce(math.min);
+    double minPrediction = recentData.predictionData.map((spot) => spot.y).reduce(math.min);
+    double overallMin = math.min(minActual, minPrediction);
+    return overallMin * 0.96;
+  }
+
   @override
   Widget build(BuildContext context) {
     const Color actualColor = Color(0xFFff0c8f3);
@@ -86,130 +103,144 @@ class _GraphWidgetState extends State<GraphWidget> {
             padding: const EdgeInsets.all(7.0),
             child: Column(
               children: [
-                Text(
-                  'Actual vs. Predicted',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 24),
-                ),
-                // SizedBox(height: 5),
-                Expanded(
-                  child: Stack(
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 8.0),
+                //   child: Text(
+                //     'Actual vs. Predicted',
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.white,
+                //       fontSize: 15),
+                //   ),
+                // ),
+
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: 4.0, top: 10.0), // right margin
-                        child: LineChart(
-                          LineChartData(
-                            backgroundColor: Color(0xFF32343A),
-                            gridData: FlGridData(show: true),
-                            titlesData: FlTitlesData(
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 50,
-                                  getTitlesWidget: (value, meta) {
-                                    return Text(
-                                      '${value.toInt()}',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    );
-                                  },
-                                ),
-                              ),
-                              rightTitles: AxisTitles(
-                                sideTitles: SideTitles(reservedSize: 0),
-                              ),
-                              topTitles: AxisTitles(
-                                sideTitles: SideTitles(reservedSize: 0),
-                              ),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: (value, meta) {
-                                    DateTime date =
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                            value.toInt());
-                                    return Text(
-                                      DateFormat('MM/dd').format(date),
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 10),
-                                    );
-                                  },
-                                ),
-                                axisNameWidget: const Text(
-                                  'Date',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              ),
-                            ),
-                            borderData: FlBorderData(
-                              show: true,
-                              border: Border(
-                                right: BorderSide(
-                                    color: Colors.transparent, width: 20),
-                              ),
-                            ),
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: recentData.actualData,
-                                isCurved: true,
-                                color: actualColor,
-                                belowBarData: BarAreaData(show: false),
-                              ),
-                              LineChartBarData(
-                                spots: recentData.predictionData,
-                                isCurved: true,
-                                color: predictionColor,
-                                dotData: FlDotData(show: true),
-                                belowBarData: BarAreaData(show: false),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 22, right: 20,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                      width: 10,
-                                      height: 10,
-                                      color: actualColor),
-                                  SizedBox(width: 6),
-                                  Text('Actual',
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                              SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Container(
-                                      width: 10,
-                                      height: 10,
-                                      color: predictionColor),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Prediction',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      Container(width: 10, height: 10, color: actualColor),
+                      SizedBox(width: 8),
+                      Text('Actual', style: TextStyle(color: Colors.white)),
+                      SizedBox(width: 30),
+                      Container(width: 10, height: 10, color: predictionColor),
+                      SizedBox(width: 8),
+                      Text('Prediction', style: TextStyle(color: Colors.white)),
                     ],
                   ),
                 ),
+
+                Expanded(
+                  child: LineChart(
+                    LineChartData(
+                      backgroundColor: Color(0xFF32343A),
+                      gridData: FlGridData(show: true),
+                      maxY: _calcMaxY(),
+                      minY: _calcMinY(),
+                      titlesData: FlTitlesData(
+
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 20,
+                            // interval: null,
+                            // getTitlesWidget: (value, meta) {
+                            //   return Text(
+                            //     formatter.format(value.toInt()),
+                            //     style: TextStyle(
+                            //         color: Colors.white, fontSize: 10),
+                            //   );
+                            // },
+                          ),
+                        ),
+
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 10
+                          ),
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 0
+                          ),
+                        ),
+
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: null,
+                            getTitlesWidget: (value, meta) {
+                              DateTime date =
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      value.toInt());
+                              return Text(
+                                DateFormat('M/d').format(date),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              );
+                            },
+                          ),
+
+                          // axisNameWidget: const Text(
+                          //   'Date',
+                          //   style: TextStyle(
+                          //       fontWeight: FontWeight.bold, color: Colors.white),
+                          // ),
+
+                        ),
+                      ),
+                      borderData: FlBorderData(
+                        show: true,
+
+                        border: Border.all(
+                          color: const Color(0xff37434d),
+                          width: 2,
+                        ),
+                        // border: Border(
+                        //   right:
+                        //       BorderSide(color: Colors.transparent, width: 20),
+                        // ),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: recentData.actualData,
+                          isCurved: true,
+                          color: actualColor,
+                          belowBarData: BarAreaData(show: false),
+                        ),
+                        LineChartBarData(
+                          spots: recentData.predictionData,
+                          isCurved: true,
+                          color: predictionColor,
+                          dotData: FlDotData(show: true),
+                          belowBarData: BarAreaData(show: false),
+                        ),
+                      ],
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                            return touchedBarSpots.map((barSpot) {
+                              final flSpot = barSpot;
+                              final isActual = barSpot.barIndex == 0;
+                              return LineTooltipItem(
+                                '${formatter.format(flSpot.y)}',
+                                TextStyle(
+                                  color: isActual ? actualColor : predictionColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                        handleBuiltInTouches: true,
+                      ),
+                    ),
+                  ),
+                ),
+
+
               ],
             ),
           );
@@ -237,19 +268,15 @@ class TableWidget extends StatelessWidget {
           return SingleChildScrollView(
             // scrollDirection: Axis.vertical,
             child: DataTable(
+              headingTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              columnSpacing: 40,
               columns: const [
-                DataColumn(
-                    label: Text('Date', style: TextStyle(color: Colors.white))),
-                DataColumn(
-                    label:
-                        Text('Actual', style: TextStyle(color: Colors.white))),
-                DataColumn(
-                    label: Text('Pred.',
-                        style: TextStyle(color: Colors.white))),
-                DataColumn(
-                    label: Text('Diff.',
-                        style: TextStyle(color: Colors.white))),
+                DataColumn(label: Center(child: Text('Date'))),
+                DataColumn(label: Center(child: Text('Actual'))),
+                DataColumn(label: Center(child: Text('Pred.'))),
+                DataColumn(label: Center(child: Text('Diff.'))),
               ],
+
               rows: List<DataRow>.generate(
                 recentData.actualData.length,
                 (index) {
@@ -257,23 +284,23 @@ class TableWidget extends StatelessWidget {
                       recentData.actualData[index].x.toInt());
                   return DataRow(cells: [
                     DataCell(Text(DateFormat('yyyy-MM-dd').format(date),
-                        style: TextStyle(color: Colors.white))),
+                        style: TextStyle(color: Colors.white, fontSize: 12))),
                     DataCell(
                       Text(
                         formatter.format(recentData.actualData[index].y),
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                     DataCell(
                       Text(
                         formatter.format(recentData.predictionData[index].y),
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                     DataCell(
                       Text(
                         formatter.format(recentData.differenceData[index].y),
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                   ]);

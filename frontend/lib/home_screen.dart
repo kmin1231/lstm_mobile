@@ -304,7 +304,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Column(
                     children: [
-                      Spacer(flex: 1),
+                      // Spacer(flex: 1),
                       Expanded(flex: 14, child: GraphWidget(ticker: widget.stockTicker)),
                       // SizedBox(height: 7),
                       Spacer(flex: 1),
