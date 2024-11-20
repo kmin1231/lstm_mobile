@@ -42,7 +42,7 @@ app.get('/firestore/data/:date', async (req, res) => {
     const date = req.params.date;
 
     try {
-        const snapshot = await firestoreDb.collection('005930_prediction')
+        const snapshot = await firestoreDb.collection('ticker_test')
             .where('date', '==', date).get();
 
         if (snapshot.empty) {
@@ -69,28 +69,29 @@ app.get('/firestore/data/:date', async (req, res) => {
 
 const saveWithCheck = async (row, retries = 3) => {
     try {
-        const docId = row.date; // identifier field: 'date'
-        const docRef = firestoreDb.collection('005930_prediction').doc(docId);
+        const docId = row.date + '_' + row.ticker;  // identifier field: 'date' & 'ticker'
+        const docRef = firestoreDb.collection('ticker_test').doc(docId);
 
         const docSnapshot = await docRef.get();
+        
         if (docSnapshot.exists) {
-            console.log(`Document for ${docId} already exists.`);
+            console.log(`Document for date: ${row.date} & ticker: ${row.ticker} already exists.`);
             return;
         }
 
         const { id, ...dataWithoutId } = row;
         await docRef.set(dataWithoutId);
-        console.log(`Data saved for date: ${row.date}`);
+        console.log(`Data saved for date '${row.date}' & ticker '${row.ticker}'`);
 
     } catch (error) {
-        console.error(`Error saving row with date ${row.date}:`, error);
+        console.error(`Error saving row with date ${row.date} & ticker ${row.ticker}:`, error);
         console.error('Row data:', row);
         if (retries > 0) {
-            console.log(`Retrying to save data for date ${row.date}. Retries left: ${retries}`);
+            console.log(`Retrying to save data for date ${row.date} & ticker ${row.ticker} -- retries left: ${retries}`);
             await sleep(2000);
             return saveWithCheck(row, retries - 1);
         } else {
-            console.error(`Failed to save data for date ${row.date} after retries.`);
+            console.error(`Failed to save data for date ${row.date} & ticker ${row.ticker} after retries.`);
         }
     }
 };
@@ -141,7 +142,7 @@ app.post('/save-specific/:date', async (req, res) => {
         const promises = filteredRows.map(async (row) => {
             // await saveWithCheck(row);
             const docId = row.date;
-            const docRef = firestoreDb.collection('005930_prediction').doc(docId);
+            const docRef = firestoreDb.collection('ticker_test').doc(docId);
 
             await docRef.set(row);
         });
@@ -160,7 +161,7 @@ app.post('/save-specific/:date', async (req, res) => {
 async function integerValues() {
     console.log('integerValues function called');
 
-    const collectionRef = firestoreDb.collection('005930_prediction'); // collection name
+    const collectionRef = firestoreDb.collection('ticker_test'); // collection name
     // let query = collectionRef;
     const snapshot = await collectionRef.get();
 
@@ -223,7 +224,7 @@ async function integerValues() {
 async function integerSpecific(date) {
     console.log('integerSpecific function called for date:', date);
 
-    const collectionRef = firestoreDb.collection('005930_prediction');
+    const collectionRef = firestoreDb.collection('ticker_test');
     const snapshot = await collectionRef.get();
 
     if (snapshot.empty) {

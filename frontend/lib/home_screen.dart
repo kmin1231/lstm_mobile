@@ -223,7 +223,10 @@ class _DetailScreenState extends State<DetailScreen> {
     // fetcher = StockPriceFetcher();
     recentData = RecentData();
     // fetchPrice();
-    fetchData();
+    recentData.fetchData(widget.stockTicker).then((_) {
+      setState(() {
+      });
+    });
   }
 
   // resource management to ensure application stability
@@ -234,7 +237,7 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<void> fetchData() async {
-    await recentData.fetchData();
+    await recentData.fetchData(widget.stockTicker);
     setState(() {});
   }
 
@@ -301,9 +304,12 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Column(
                     children: [
-                      Expanded(flex: 4, child: GraphWidget()),
-                      SizedBox(height: 7),
-                      Expanded(flex: 5, child: TableWidget()),
+                      Spacer(flex: 1),
+                      Expanded(flex: 14, child: GraphWidget(ticker: widget.stockTicker)),
+                      // SizedBox(height: 7),
+                      Spacer(flex: 1),
+                      Expanded(flex: 16, child: TableWidget(ticker: widget.stockTicker)),
+                      Spacer(flex: 1),
                     ],
                   ),
                   CalendarWidget(),
@@ -324,6 +330,7 @@ class _DetailScreenState extends State<DetailScreen> {
               );
             }),
           ),
+          SizedBox(height: 10)
         ],
       ),
     );
@@ -402,7 +409,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       print('Requesting data for date: $formattedDate');
 
       final querySnapshot = await FirebaseFirestore.instance
-          .collection('005930_prediction')
+          .collection('ticker_test')
           .where('date', isEqualTo: formattedDate)
           .get();
 

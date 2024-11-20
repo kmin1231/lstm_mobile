@@ -11,7 +11,7 @@ const router = express.Router();
 // app.set('views', path.join(__dirname, 'views'));
 
 // Database Connection
-const dbPath = path.join(__dirname, '../lstm_django/db.sqlite3');
+const dbPath = path.join(__dirname, '../lstm_django/merged.sqlite3');
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
@@ -43,7 +43,7 @@ router.get('/data/:date', (req, res) => {
 });
 
 const getAllData = (callback) => {
-    const query = `SELECT id, actual, prediction, difference, date FROM lstm_prediction`;
+    const query = `SELECT date, actual, prediction, difference, ticker FROM test`;
     db.all(query, [], (err, rows) => {
         if (err) {
             return callback(err);

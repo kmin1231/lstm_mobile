@@ -10,20 +10,33 @@ class RecentData {
   List<FlSpot> predictionData = [];
   List<FlSpot> differenceData = [];
 
-  Future<void> fetchData() async {
+  Future<void> fetchData(String ticker) async {
     DateTime endDate = DateTime.now();
-    DateTime startDate = endDate.subtract(Duration(days: 30));
+    DateTime startDate = endDate.subtract(Duration(days: 60));
+    // DateTime startDate = DateTime(2024, 1, 1);
+
     String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
 
     QuerySnapshot querySnapshot = await _firestore
-        .collection('005930_prediction')
+        .collection('ticker_test')
         .where('date', isGreaterThanOrEqualTo: formattedStartDate)
         .where('date', isLessThanOrEqualTo: formattedEndDate)
+        .where('ticker', isEqualTo: ticker)
+        .orderBy('date')
         .get();
 
+    // check whether the query works well
+    // querySnapshot.docs.forEach((doc) {
+    //   print(doc.data());
+    // });
+
+    actualData.clear();
+    predictionData.clear();
+    differenceData.clear();
+
     for (var doc in querySnapshot.docs) {
-      DateTime date = DateTime.parse(doc.id);
+      DateTime date = DateTime.parse(doc.id.split('_')[0]);
       double actual = doc['actual'].toDouble() ?? 0.0;
       double prediction = doc['prediction'].toDouble() ?? 0.0;
       double difference = doc['difference'].toDouble() ?? 0.0;
@@ -38,7 +51,9 @@ class RecentData {
 }
 
 class GraphWidget extends StatefulWidget {
-  const GraphWidget({Key? key}) : super(key: key);
+  final String ticker;
+
+  const GraphWidget({Key? key, required this.ticker}) : super(key: key);
 
   @override
   _GraphWidgetState createState() => _GraphWidgetState();
@@ -52,7 +67,7 @@ class _GraphWidgetState extends State<GraphWidget> {
     super.initState();
     recentData = RecentData();
     // recentData.fetchData();
-    recentData.fetchData().then((_) {
+    recentData.fetchData(widget.ticker).then((_) {
       setState(() {
         recentData.actualData = recentData.actualData.reversed.toList();
         recentData.predictionData = recentData.predictionData.reversed.toList();
@@ -202,7 +217,9 @@ class _GraphWidgetState extends State<GraphWidget> {
 }
 
 class TableWidget extends StatelessWidget {
-  TableWidget({Key? key}) : super(key: key);
+  final String ticker;
+
+  TableWidget({Key? key, required this.ticker}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +227,7 @@ class TableWidget extends StatelessWidget {
     final formatter = NumberFormat("#,###");
 
     return FutureBuilder<void>(
-      future: recentData.fetchData(),
+      future: recentData.fetchData(ticker),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
