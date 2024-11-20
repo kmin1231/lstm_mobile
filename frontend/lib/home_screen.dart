@@ -414,7 +414,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           .get();
 
       setState(() {
-        fetchedData = querySnapshot.docs;
+        fetchedData = querySnapshot.docs.toSet().toList();
       });
 
       print('Fetched data count: ${fetchedData.length}');
@@ -452,15 +452,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               ),
             SizedBox(height: 20),
             Container(
-              height: 270,
-              width: 330,
+              height: 260,
+              width: 320,
               decoration: BoxDecoration(
                 color: calendarBackgroundColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: CalendarDatePicker(
                 initialDate: selectedDate ?? DateTime.now(),
-                firstDate: DateTime(2000),
+                firstDate: DateTime(2024),
                 lastDate: DateTime(2101),
                 onDateChanged: (date) {
                   _selectDate(date);
@@ -496,7 +496,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       child: Text('No Data Available',
                           style: TextStyle(color: calendarTextColor)))
                   : ListView.builder(
-                      itemCount: fetchedData.length,
+                      itemCount: 1,
+                      // itemCount: fetchedData.length,
                       itemBuilder: (context, index) {
                         final data = fetchedData[index];
 
