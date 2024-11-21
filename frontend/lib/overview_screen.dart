@@ -555,7 +555,7 @@ class StatsWidget extends StatelessWidget {
             ],
           ),
         ],
-      ),r
+      ),
     );
   }
 }
