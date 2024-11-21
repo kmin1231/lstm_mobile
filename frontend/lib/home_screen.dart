@@ -207,6 +207,9 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   late RecentData recentData;
 
+  double accuracy = 0.0;
+  double margin = 0.0;
+
   String price = ' ';
   static const String fontTitle = 'Lexend';
   static const String fontItem = 'IBM Plex Sans KR';
@@ -223,9 +226,18 @@ class _DetailScreenState extends State<DetailScreen> {
     // fetcher = StockPriceFetcher();
     recentData = RecentData();
     // fetchPrice();
-    recentData.fetchData(widget.stockTicker).then((_) {
-      setState(() {
-      });
+    // recentData.fetchData(widget.stockTicker).then((_) {
+    //   setState(() {
+    //   });
+    // });
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await recentData.fetchData(widget.stockTicker);
+    setState(() {
+      accuracy = recentData.calcAccuracy();
+      margin = recentData.calcMargin();
     });
   }
 
@@ -313,11 +325,23 @@ class _DetailScreenState extends State<DetailScreen> {
                     ],
                   ),
                   CalendarWidget(),
+
+                  Center(
+                    child: SizedBox(
+                      width: 300,
+                      height: 180,
+                      child: StatsWidget(
+                        accuracy: recentData.calcAccuracy(),
+                        margin: recentData.formattedMargin(),
+                      ),
+                    ),
+                  ),
                 ],
-              )),
+              ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(2, (index) {
+            children: List.generate(3, (index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 4.0),
                 width: 12.0,
@@ -389,161 +413,3 @@ class StockPriceFetcher {
   }
 }
 
-class CalendarWidget extends StatefulWidget {
-  @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
-}
-
-class _CalendarWidgetState extends State<CalendarWidget> {
-  DateTime? selectedDate;
-  List<DocumentSnapshot> fetchedData = [];
-
-  static const Color backgroundColor = Color(0xFF181A1F);
-  static const Color calendarBackgroundColor = Colors.white;
-  static const Color calendarTextColor = Colors.white;
-  static const Color resultTextColor = Colors.white;
-
-  Future<void> requestData(DateTime date) async {
-    try {
-      final formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      print('Requesting data for date: $formattedDate');
-
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('ticker_test')
-          .where('date', isEqualTo: formattedDate)
-          .get();
-
-      setState(() {
-        fetchedData = querySnapshot.docs.toSet().toList();
-      });
-
-      print('Fetched data count: ${fetchedData.length}');
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
-
-  void _selectDate(DateTime date) {
-    setState(() {
-      selectedDate = date;
-      requestData(selectedDate!);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Select Date and Fetch Data'),
-      //   backgroundColor: backgroundColor,
-      // ),
-      body: Container(
-        color: backgroundColor,
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SizedBox(height: 5),
-            if (selectedDate != null)
-              Text(
-                'Select Date',
-                // 'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}',
-                style:
-                    TextStyle(fontSize: 18, color: calendarTextColor),
-              ),
-            SizedBox(height: 20),
-            Container(
-              height: 260,
-              width: 320,
-              decoration: BoxDecoration(
-                color: calendarBackgroundColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: CalendarDatePicker(
-                initialDate: selectedDate ?? DateTime.now(),
-                firstDate: DateTime(2024),
-                lastDate: DateTime(2101),
-                onDateChanged: (date) {
-                  _selectDate(date);
-                },
-              ),
-            ),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              // children: [
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       selectedDate = null;
-              //     });
-              //   },
-              //   child: Text('Cancel'),
-              // ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     if (selectedDate != null) {
-              //       requestData(selectedDate!);
-              //     }
-              //   },
-              //   child: Text('OK'),
-            ),
-            // ],
-            // ),
-            SizedBox(height: 20),
-            Expanded(
-              child: fetchedData.isEmpty
-                  ? Center(
-                      child: Text('No Data Available',
-                          style: TextStyle(color: calendarTextColor)))
-                  : ListView.builder(
-                      itemCount: 1,
-                      // itemCount: fetchedData.length,
-                      itemBuilder: (context, index) {
-                        final data = fetchedData[index];
-
-                        return ListTile(
-                            title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                              Text('${data['date']}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: resultTextColor,
-                                      fontSize: 21)),
-                              SizedBox(height: 8),
-                              Container(
-                                width: 180,
-                                child: Divider(),
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(height: 5),
-                                  Text(
-                                      'Actual: ${NumberFormat('#,##0').format(data['actual'])}',
-                                      style: TextStyle(
-                                          color: resultTextColor,
-                                          fontSize: 19)),
-                                  SizedBox(height: 10),
-                                  Text(
-                                      'Prediction: ${NumberFormat('#,##0').format(data['prediction'])}',
-                                      style: TextStyle(
-                                          color: resultTextColor,
-                                          fontSize: 19)),
-                                  SizedBox(height: 10),
-                                  Text(
-                                      'Difference: ${NumberFormat('#,##0').format(data['difference'])}',
-                                      style: TextStyle(
-                                          color: resultTextColor,
-                                          fontSize: 19)),
-                                ],
-                              ),
-                            ]));
-                      },
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
