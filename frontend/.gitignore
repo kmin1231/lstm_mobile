@@ -42,4 +42,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# 
 kis.key
+
+# ignore files for platforms not being targeted
+linux/
+macos/
+windows/
