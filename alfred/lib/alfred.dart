@@ -10,6 +10,8 @@ import 'news_service.dart';
 void startServer() async {
   final app = Alfred();
 
+  app.all('*', cors(origin: '*'));
+
   final newsService = NewsService();
 
   // fetches news articles related to keyword
