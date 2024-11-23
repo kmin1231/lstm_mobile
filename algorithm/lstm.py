@@ -19,12 +19,13 @@ import threading
 tickers = ['005930', '000660', '373220', '207940', '005380',
            '005935', '068270', '000270', '105560', '005380']
 
-# start_date = '2015-01-01'
-start_date = '2024-01-01'
+start_date = '2015-01-01'
+# start_date = '2024-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
-epochs = 2
+epochs = 100
+# epochs = 2
 batch_size = 8
 
 if platform.system() == 'Windows':
