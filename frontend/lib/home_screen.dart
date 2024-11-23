@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:dio/dio.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'overview_screen.dart';
+import 'news_crawler.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final String stockTicker;
@@ -314,6 +316,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   });
                 },
                 children: [
+                  NewsWidget(stockName: widget.stockName),
                   Column(
                     children: [
                       // Spacer(flex: 1),
@@ -341,7 +344,7 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(3, (index) {
+            children: List.generate(4, (index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 4.0),
                 width: 12.0,

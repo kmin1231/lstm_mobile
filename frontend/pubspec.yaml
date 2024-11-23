@@ -31,6 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
   cupertino_icons: ^1.0.8
@@ -49,12 +51,15 @@ dependencies:
   chopper: ^8.0.3
   web_socket_channel: ^3.0.1
   table_calendar: ^3.1.2
+  url_launcher: ^6.3.1
+  flutter_inappwebview: ^6.1.5
 
 flutter:
   uses-material-design: true
   assets:
     - lib/assets/images/
     - .env
+    - lib/assets/kis.key
 
 dev_dependencies:
   flutter_test:
