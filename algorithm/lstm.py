@@ -6,17 +6,25 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from datetime import date
 import matplotlib.pyplot as plt
-import os, platform
+import os, platform, time
 import sqlite3
+from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import threading
+
+# import matplotlib
+# matplotlib.use('Agg')
+
 
 tickers = ['005930', '000660', '373220', '207940', '005380',
            '005935', '068270', '000270', '105560', '005380']
 
-start_date = '2015-01-01'
+# start_date = '2015-01-01'
+start_date = '2024-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
-epochs = 100
+epochs = 2
 batch_size = 8
 
 if platform.system() == 'Windows':
@@ -118,6 +126,7 @@ def plot_results(results, ticker, days=220):
     plt.close()
     print(f'\nPlot saved to {save_path}')
 
+db_lock = threading.Lock()
 
 def save_to_sqlite(results, db_name, table_name='predictions'):
     if not db_name.endswith('.sqlite3'):
@@ -131,13 +140,14 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
     #     db_name = f'{base_name}({counter}){extension}'
     #     counter += 1
 
-    conn = sqlite3.connect(db_name)
-    
-    results['date'] = pd.to_datetime(results['date']).dt.date
-    
-    results.to_sql(table_name, conn, if_exists='append', index=False)
-    conn.close()
-    print(f"Data saved to {db_name} -- table '{table_name}'")
+    with db_lock:
+        conn = sqlite3.connect(db_name)
+        
+        results['date'] = pd.to_datetime(results['date']).dt.date
+        
+        results.to_sql(table_name, conn, if_exists='append', index=False)
+        conn.close()
+        print(f"\nData updated to {db_name}")
 
 
 def predict_next_day_price(model, scaler, results, time_steps):
@@ -153,17 +163,15 @@ def predict_next_day_price(model, scaler, results, time_steps):
     return formatted_next_day_price
 
 
-db_path = os.path.join(SAVE_DIRECTORY, 'lstm_predictions.db')
-
-for ticker in tickers:
+def process_stock(ticker):
     results, model, scaler = predict_stock_price(ticker, start_date, end_date, time_steps, epochs, batch_size)
 
-    print(f"\nStock {ticker} - Last 60 Days:")
-    print_recent_days(results)
+    # print(f"\nStock {ticker} - Last 60 Days:")
+    # print_recent_days(results)
 
-    plot_results(results, ticker)
+    # plot_results(results, ticker)
 
-    # db_path = os.path.join(SAVE_DIRECTORY, f'db_{ticker}.db')
+    db_path = os.path.join(SAVE_DIRECTORY, 'lstm_predictions.db')
     save_to_sqlite(results, db_name=db_path, table_name=f'predictions')
 
     abs_diff_mean = results['difference'].abs().mean()
@@ -171,4 +179,27 @@ for ticker in tickers:
     print(f"\nStock {ticker} Mean of Absolute Differences: KRW {abs_diff_mean_formatted}\n")
 
     next_day_price_formatted = predict_next_day_price(model, scaler, results, time_steps)
-    print(f"Stock {ticker} Next Day Predicted Price: KRW {next_day_price_formatted}\n")
+    print(f"Stock {ticker} Next Day Predicted Price: KRW {next_day_price_formatted}\n\n")
+
+    print(f"Processing stock {ticker}...")
+    time.sleep(1)
+    return f"Completed {ticker}"
+
+
+def stock_parallel_thread(tickers):
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        results = list(tqdm(executor.map(process_stock, tickers), total=len(tickers), desc="Processing Status:"))
+        return results
+    
+def stock_parallel_core(tickers):
+    with ProcessPoolExecutor(max_workers=2) as executor:
+        results = list(tqdm(executor.map(process_stock, tickers), total=len(tickers), desc="Processing Status:"))
+        return results
+
+
+if __name__ == '__main__':
+    results = stock_parallel_core(tickers)
+    
+    print("\nResults:")
+    for result in results:
+        print(result)
