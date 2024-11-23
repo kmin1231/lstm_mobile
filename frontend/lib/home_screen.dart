@@ -216,22 +216,13 @@ class _DetailScreenState extends State<DetailScreen> {
   static const String fontTitle = 'Lexend';
   static const String fontItem = 'IBM Plex Sans KR';
 
-  // late StockPriceFetcher fetcher;
-  // Completer<void>? _fetchPriceCompleter;
-
   PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    // fetcher = StockPriceFetcher();
     recentData = RecentData();
-    // fetchPrice();
-    // recentData.fetchData(widget.stockTicker).then((_) {
-    //   setState(() {
-    //   });
-    // });
     _loadData();
   }
 
@@ -255,29 +246,10 @@ class _DetailScreenState extends State<DetailScreen> {
     setState(() {});
   }
 
-  // Future<void> fetchPrice() async {
-  //   print("Fetching price for ${widget.stockTicker}");
-  //   _fetchPriceCompleter = Completer<void>();
-  //   try {
-  //     String fetchedPrice = await fetcher.getPrice(widget.stockTicker);
-  //     if (mounted) {
-  //       setState(() {
-  //         price = fetchedPrice;
-  //       });
-  //     }
-  //   } catch (error) {
-  //     if (mounted) {
-  //       setState(() {
-  //         price = " ? ";
-  //       });
-  //     }
-  //     print("Error: $error");
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     const Color backgroundColor = Color(0xFF181A1F);
+    const Color buttonColor = Color(0xFF9BC9E9);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -342,77 +314,64 @@ class _DetailScreenState extends State<DetailScreen> {
                 ],
               ),
           ),
+
+          // page indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) {
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: 4.0),
-                width: 12.0,
-                height: 12.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color:
-                      _currentPage == index ? Color(0xFF9BC9E9) : Colors.grey,
-                ),
-              );
-            }),
+            children: [
+              IconButton(
+                onPressed: _currentPage > 0
+                    ? () {
+                        setState(() {
+                          _currentPage--;
+                          _pageController.animateToPage(
+                            _currentPage,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      }
+                    : null,
+                icon: Icon(Icons.arrow_back),
+                color: _currentPage > 0 ? buttonColor : backgroundColor,
+              ),
+              
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+                    width: 12.0,
+                    height: 12.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentPage == index ? buttonColor : Colors.grey,
+                    ),
+                  );
+                }),
+              ),
+              
+              IconButton(
+                onPressed: _currentPage < 3
+                    ? () {
+                        setState(() {
+                          _currentPage++;
+                          _pageController.animateToPage(
+                            _currentPage,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      }
+                    : null,
+                icon: Icon(Icons.arrow_forward),
+                color: _currentPage < 3 ? buttonColor : backgroundColor,
+              ),
+            ],
           ),
-          SizedBox(height: 10)
+          SizedBox(height: 10),
         ],
       ),
     );
   }
 }
-
-// SizedBox(height: 20),
-
-// Center(
-//   child: Text(
-//     "Stock Name: ${widget.stockName}",
-//     style: GoogleFonts.getFont(
-//         fontItem,
-//         color: Colors.white,
-//         fontSize: 16),
-//     // textAlign: TextAlign.center,
-//   ),
-// ),
-//
-// SizedBox(height: 10),
-//
-// Center(
-//   child: Text(
-//     "Stock Ticker: ${widget.stockTicker}",
-//     style: GoogleFonts.getFont(
-//         fontItem,
-//         color: Colors.white,
-//         fontSize: 16),
-//   ),
-// ),
-
-// SizedBox(height: 10),
-// Center(
-//   child: Text(
-//     "Current Price: $price원",
-//     style: GoogleFonts.getFont(
-//         fontItem,
-//         color: Colors.white,
-//         fontSize: 16),
-//   ),
-// ),
-
-class StockPriceFetcher {
-  Future<String> getPrice(String stockTicker) async {
-    final url = Uri.parse('http://127.0.0.1:8000/lstm/stock/$stockTicker');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final price = data['price'];
-      print('Current price: $price');
-      return data['price'].toString();
-    } else {
-      throw Exception('Failed to load stock price');
-    }
-  }
-}
-
