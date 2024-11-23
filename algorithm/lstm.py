@@ -76,12 +76,13 @@ def predict_stock_price(ticker, start_date, end_date, time_steps, epochs, batch_
     predictions = scaler.inverse_transform(predictions)
 
     results = pd.DataFrame({
-        'Date': data['Date'][time_steps:],
-        'Actual': data['Close'][time_steps:].values,
-        'Prediction': predictions.flatten().round(-2).astype(int)
+        'ticker': ticker,
+        'date': data['Date'][time_steps:],
+        'actual': data['Close'][time_steps:].values,
+        'prediction': predictions.flatten().round(-2).astype(int)
     })
     
-    results['Difference'] = (results['Prediction'] - results['Actual']).astype(int)
+    results['difference'] = (results['prediction'] - results['actual']).astype(int)
     
     return results, model, scaler
 
@@ -93,8 +94,8 @@ def print_recent_days(results):
 def plot_results(results, ticker, days=220):
     plt.figure(figsize=(12, 6))
     
-    plt.plot(results['Date'][-days:], results['Actual'][-days:], label='Actual', color='red')
-    plt.plot(results['Date'][-days:], results['Prediction'][-days:], label='Prediction', color='blue')
+    plt.plot(results['date'][-days:], results['actual'][-days:], label='Actual', color='red')
+    plt.plot(results['date'][-days:], results['prediction'][-days:], label='Prediction', color='blue')
     
     plt.title(f'{ticker} Stock Price - Recent {days} Days')
     plt.xlabel('Date')
@@ -104,12 +105,12 @@ def plot_results(results, ticker, days=220):
     plt.xticks(rotation=45)
     plt.tight_layout()
 
-    base_filename = f'result_{ticker}.png'
+    base_filename = f'result{ticker}.png'
     save_path = os.path.join(SAVE_DIRECTORY, base_filename)
 
     counter = 1
     while os.path.exists(save_path):
-        save_path = os.path.join(SAVE_DIRECTORY, f'result_{ticker}({counter}).png')
+        save_path = os.path.join(SAVE_DIRECTORY, f'result{ticker}({counter}).png')
         counter += 1
     
     plt.savefig(save_path)
@@ -122,25 +123,25 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
     if not db_name.endswith('.sqlite3'):
         db_name += '.sqlite3'
 
-    base_name = db_name.rsplit('.', 1)[0]
-    extension = '.sqlite3'
+    # base_name = db_name.rsplit('.', 1)[0]
+    # extension = '.sqlite3'
 
-    counter = 1
-    while os.path.exists(db_name):
-        db_name = f'{base_name}({counter}){extension}'
-        counter += 1
+    # counter = 1
+    # while os.path.exists(db_name):
+    #     db_name = f'{base_name}({counter}){extension}'
+    #     counter += 1
 
     conn = sqlite3.connect(db_name)
     
-    results['Date'] = pd.to_datetime(results['Date']).dt.date
+    results['date'] = pd.to_datetime(results['date']).dt.date
     
-    results.to_sql(table_name, conn, if_exists='replace', index=False)
+    results.to_sql(table_name, conn, if_exists='append', index=False)
     conn.close()
-    print(f'Data saved to {db_name}')
+    print(f"Data saved to {db_name} -- table '{table_name}'")
 
 
 def predict_next_day_price(model, scaler, results, time_steps):
-    last_sequence = results['Actual'].tail(time_steps).values.reshape(-1, 1)
+    last_sequence = results['actual'].tail(time_steps).values.reshape(-1, 1)
     last_sequence_scaled = scaler.transform(last_sequence)
     last_sequence_scaled = last_sequence_scaled.reshape(1, time_steps, 1)
 
@@ -152,6 +153,7 @@ def predict_next_day_price(model, scaler, results, time_steps):
     return formatted_next_day_price
 
 
+db_path = os.path.join(SAVE_DIRECTORY, 'lstm_predictions.db')
 
 for ticker in tickers:
     results, model, scaler = predict_stock_price(ticker, start_date, end_date, time_steps, epochs, batch_size)
@@ -161,12 +163,12 @@ for ticker in tickers:
 
     plot_results(results, ticker)
 
-    db_path = os.path.join(SAVE_DIRECTORY, f'db_{ticker}.db')
-    save_to_sqlite(results, db_name=db_path, table_name=f'predictions_{ticker}')
+    # db_path = os.path.join(SAVE_DIRECTORY, f'db_{ticker}.db')
+    save_to_sqlite(results, db_name=db_path, table_name=f'predictions')
 
-    abs_diff_mean = results['Difference'].abs().mean()
+    abs_diff_mean = results['difference'].abs().mean()
     abs_diff_mean_formatted = f"{int(round(abs_diff_mean)):,}"
-    print(f"\nStock {ticker} Mean of Absolute Differences: {abs_diff_mean_formatted}원\n")
+    print(f"\nStock {ticker} Mean of Absolute Differences: KRW {abs_diff_mean_formatted}\n")
 
     next_day_price_formatted = predict_next_day_price(model, scaler, results, time_steps)
-    print(f"Stock {ticker} Next Day Predicted Price: {next_day_price_formatted}원\n")
+    print(f"Stock {ticker} Next Day Predicted Price: KRW {next_day_price_formatted}\n")
