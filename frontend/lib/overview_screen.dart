@@ -4,6 +4,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
+import 'constants.dart';
+
 class RecentData {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -132,7 +134,9 @@ class _GraphWidgetState extends State<GraphWidget> {
     const Color predictionColor = Color(0xFFbdd9ee);
 
     return recentData.actualData.isEmpty
-        ? Center(child: CircularProgressIndicator())
+        ? Center(child: CircularProgressIndicator(
+          color: progressColor,
+        ))
         : Padding(
             padding: const EdgeInsets.all(7.0),
             child: Column(
@@ -295,7 +299,9 @@ class TableWidget extends StatelessWidget {
       future: recentData.fetchData(ticker),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator(
+            color: progressColor,
+          ));
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {

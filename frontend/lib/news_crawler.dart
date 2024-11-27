@@ -33,7 +33,7 @@ class _NewsWidgetState extends State<NewsWidget> {
     final encodedStockName = Uri.encodeComponent(widget.stockName);
 
     // determines 'baseUrl' based on the platform: Android vs. web 
-    final baseUrl = kIsWeb ? 'http://localhost:8080' : (Platform.isAndroid ? 'http://10.0.2.2:8080' : 'http://localhost:8080');
+    final baseUrl = kIsWeb ? 'http://localhost:8090' : (Platform.isAndroid ? 'http://10.0.2.2:8090' : 'http://localhost:8090');
     final url = Uri.parse('$baseUrl/news/$encodedStockName');
 
     try {
@@ -70,6 +70,7 @@ class _NewsWidgetState extends State<NewsWidget> {
   @override
   Widget build(BuildContext context) {
     const Color cardColor = Color(0xFF32343A);
+    const Color progressColor = Color(0xFFCFE2F3);
     final screenWidth = MediaQuery.of(context).size.width;  // responsive
 
     return Column(
@@ -86,46 +87,53 @@ class _NewsWidgetState extends State<NewsWidget> {
           ),
         ),
         
-        Expanded(
-          child: ListView.builder(
-            itemCount: _news.length,
-            itemBuilder: (context, index) {
-              return Center(
-                child: Card(
-                  margin: EdgeInsets.all(5.0),
-                  color: cardColor,
-                  child: Container(
-                    width: screenWidth * 0.88,
-                    padding: EdgeInsets.all(4.0),
-                    child: ListTile(
-                      title: Text(
-                        _news[index]['title'] ?? '',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'Roboto',
+        _isLoading ? Expanded(
+          child: Center(
+            child: CircularProgressIndicator(
+                color: progressColor,
+            ),
+          ),
+        )
+        : Expanded(
+            child: ListView.builder(
+              itemCount: _news.length,
+              itemBuilder: (context, index) {
+                return Center(
+                  child: Card(
+                    margin: EdgeInsets.all(5.0),
+                    color: cardColor,
+                    child: Container(
+                      width: screenWidth * 0.88,
+                      padding: EdgeInsets.all(4.0),
+                      child: ListTile(
+                        title: Text(
+                          _news[index]['title'] ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Roboto',
+                          ),
                         ),
-                      ),
-                      onTap: () async {
-                        try {
-                          final url = Uri.parse(_news[index]['url'] ?? '');
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
-                          } else {
-                            print('Could not launch $url');
+                        onTap: () async {
+                          try {
+                            final url = Uri.parse(_news[index]['url'] ?? '');
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                            } else {
+                              print('Could not launch $url');
+                            }
+                          } catch (e) {
+                            print('Error launching URL: $e');
                           }
-                        } catch (e) {
-                          print('Error launching URL: $e');
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        SizedBox(height: 17),
+         SizedBox(height: 17),
       ],
     );
   }

@@ -21,8 +21,8 @@ void startServer() async {
     return {'keyword': keyword, 'articles': articles};
   });
 
-  await app.listen(8080);
-  print('Alfred Server running on http://localhost:8080');
+  await app.listen(8090);
+  print('Alfred Server running on http://localhost:8090');
 }
 
 

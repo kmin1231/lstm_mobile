@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'overview_screen.dart';
 import 'news_crawler.dart';
+import 'constants.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     const String screenName = 'PrediTock';
-    const Color backgroundColor = Color(0xFF181A1F);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -105,7 +105,6 @@ class _ItemsState extends State<Items> {
 
   @override
   Widget build(BuildContext context) {
-    const Color backgroundColor = Color(0xFF181A1F);
 
     return Container(
       width: 288,
@@ -248,7 +247,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color backgroundColor = Color(0xFF181A1F);
     const Color buttonColor = Color(0xFF9BC9E9);
 
     return Scaffold(
