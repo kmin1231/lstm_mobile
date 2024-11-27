@@ -2,6 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         android:label="PrediTock"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

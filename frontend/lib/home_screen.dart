@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'overview_screen.dart';
-// import 'package:intl/intl.dart';
 
 import 'news_crawler.dart';
+import 'info_screen.dart';
 import 'constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: basicColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -37,7 +37,55 @@ class _HomeScreenState extends State<HomeScreen> {
           appName,
           style: appNameStyle,
         ),
+
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 6.0),  // position
+            child: PopupMenuButton<String>(
+              color: menuButtonColor,
+              icon: Icon(Icons.more_vert, color: Colors.white),
+              onSelected: (value) {
+                switch (value) {
+                  case 'geninfo':
+                    Navigator.pushNamed(context, '/geninfo');
+                    break;
+                  case 'devinfo':
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const DevInfoDialog();
+                      },
+                    );
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: 'geninfo',
+                  child: Row(
+                    children: [
+                      Icon(Icons.info),
+                      SizedBox(width: 7),
+                      Text('General Info', style: infoMenuStyle),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'devinfo',
+                  child: Row(
+                    children: [
+                      Icon(Icons.info),
+                      SizedBox(width: 7),
+                      Text('Dev Info', style: TextStyle(fontSize: 16, color: infoTextColor)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -61,9 +109,6 @@ class Items extends StatefulWidget {
 }
 
 class _ItemsState extends State<Items> {
-
-  // static const String fontItem = 'IBM Plex Sans KR';
-  // static const String fontTicker = 'Lato';
 
   @override
   Widget build(BuildContext context) {
@@ -154,12 +199,11 @@ class DetailScreen extends StatefulWidget {
   final String stockName;
   final String stockTicker;
 
-  // DetailScreen({required this.stockTicker, required this.stockName});
   const DetailScreen({
-    Key? key,
+    super.key,
     required this.stockName,
     required this.stockTicker,
-  }) : super(key: key);
+  });
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -173,7 +217,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   String price = ' ';
 
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
@@ -205,10 +249,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color buttonColor = Color(0xFF9BC9E9);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: basicColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -289,7 +332,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       }
                     : null,
                 icon: Icon(Icons.arrow_back),
-                color: _currentPage > 0 ? buttonColor : backgroundColor,
+                color: _currentPage > 0 ? buttonColor : basicColor,
               ),
               
               Row(
@@ -321,7 +364,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       }
                     : null,
                 icon: Icon(Icons.arrow_forward),
-                color: _currentPage < 3 ? buttonColor : backgroundColor,
+                color: _currentPage < 3 ? buttonColor : basicColor,
               ),
             ],
           ),

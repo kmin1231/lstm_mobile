@@ -119,7 +119,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                           try {
                             final url = Uri.parse(_news[index]['url'] ?? '');
                             if (await canLaunchUrl(url)) {
-                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                              await launchUrl(url);
                             } else {
                               print('Could not launch $url');
                             }

@@ -4,6 +4,7 @@ import 'firebase_options.dart';
 
 import 'splash_screen.dart';
 import 'home_screen.dart';
+import 'info_screen.dart';
 import 'constants.dart';
 
 void main() async {
@@ -37,11 +38,13 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(title: 'PrediTock'),
         '/home': (context) => HomeScreen(stockTicker: ''),
         '/detail': (context) => DetailScreen(stockName: '', stockTicker: ''),
+        '/geninfo': (context) => GenInfoPage(),
+        // '/devinfo': (context) => DevInfoDialog(),
       },
 
       theme: ThemeData(
         primaryColor: mainColor,
-        scaffoldBackgroundColor: backgroundColor,
+        scaffoldBackgroundColor: basicColor,
       ),
     );
   }

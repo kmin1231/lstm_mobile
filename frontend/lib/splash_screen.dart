@@ -29,7 +29,7 @@ class SplashScreen extends StatelessWidget {
                     'made by the LSTM model in this app';
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: basicColor,
       body: SafeArea(
         minimum: EdgeInsets.only(top: 0),
         child: Column(

@@ -53,6 +53,7 @@ dependencies:
   table_calendar: ^3.1.2
   url_launcher: ^6.3.1
   flutter_inappwebview: ^6.1.5
+  material_design_icons_flutter: ^7.0.7296
 
 flutter:
   uses-material-design: true
@@ -89,6 +90,32 @@ flutter:
           weight: 800
         - asset: lib/assets/fonts/Lexend-Light.ttf
           weight: 300
+    - family: Lato
+      fonts:
+        - asset: lib/assets/fonts/Lato-Regular.ttf
+          weight: 400
+          style: normal
+        - asset: lib/assets/fonts/Lato-Bold.ttf
+          weight: 700
+          style: normal
+        - asset: lib/assets/fonts/Lato-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: lib/assets/fonts/Lato-BoldItalic.ttf
+          weight: 700
+          style: italic
+    - family: SignikaNegative
+      fonts:
+        - asset: lib/assets/fonts/SignikaNegative-Regular.ttf
+          weight: 400
+          style: normal
+        - asset: lib/assets/fonts/SignikaNegative-Bold.ttf
+          weight: 700
+          style: normal
+        - asset: lib/assets/fonts/SignikaNegative-SemiBold.ttf
+          weight: 600
+          style: normal
+        
 
 dev_dependencies:
   flutter_test:
