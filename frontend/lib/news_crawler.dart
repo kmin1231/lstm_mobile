@@ -80,6 +80,7 @@ class _NewsWidgetState extends State<NewsWidget> {
           child: Text(
             '최신 뉴스',
             style: TextStyle(
+              fontFamily: 'IBMPlexSansKR',
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -111,7 +112,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
-                            fontFamily: 'Roboto',
+                            fontFamily: 'IBMPlexSansKR',
                           ),
                         ),
                         onTap: () async {
