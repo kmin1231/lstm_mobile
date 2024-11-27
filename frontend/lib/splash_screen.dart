@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'constants.dart';
+
 class SplashScreen extends StatelessWidget {
   final String title;
-  const SplashScreen({Key? key, required this.title}) : super(key: key);
-  static const String fontFamily = 'Signika Negative';
-  // static const String fontFamily = 'Baloo Paaji 2';
+  const SplashScreen({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacementNamed('/home');
+      if (context.mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
     });
 
-    const Color backgroundColor = Color(0xFF181A1F);
-    const double ImageHeight = 280;
+    const double imageHeight = 280;
     const double sizedBoxH1 = 55;
     const double sizedBoxH2 = 15;
     const double sizedBoxH3 = 40;
@@ -37,14 +38,14 @@ class SplashScreen extends StatelessWidget {
           children: [
             Image.asset(
               'lib/assets/images/stock_chart.png',
-              height: ImageHeight,
+              height: imageHeight,
               fit: BoxFit.cover,
             ),
             const SizedBox(height: sizedBoxH1),
             Text(
               welcomeText,
               style: GoogleFonts.getFont(
-                fontFamily,
+                fontSplash,
                 color: Colors.white,
                 fontSize: fontDefault,
                 fontWeight: FontWeight.bold,
@@ -56,8 +57,8 @@ class SplashScreen extends StatelessWidget {
             Text(
               appNameText,
               style: GoogleFonts.getFont(
-                fontFamily,
-                color: Color(0xFF9bc9e9),
+                fontSplash,
+                color: mainColor,
                 fontSize: fontDefault,
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
@@ -69,7 +70,7 @@ class SplashScreen extends StatelessWidget {
               child: Text(
                 descriptionText,
                 style: GoogleFonts.getFont(
-                  fontFamily,
+                  fontSplash,
                   color: Colors.white,
                   fontSize: fontSmall,
                 ),
