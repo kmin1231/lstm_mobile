@@ -24,7 +24,7 @@ class RecentData {
     String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
 
     QuerySnapshot querySnapshot = await _firestore
-        .collection('ticker_test')
+        .collection('predictions')
         .where('date', isGreaterThanOrEqualTo: formattedStartDate)
         .where('date', isLessThanOrEqualTo: formattedEndDate)
         .where('ticker', isEqualTo: ticker)
@@ -62,6 +62,22 @@ class RecentData {
     return actualData.isNotEmpty ? sum / actualData.length : 0.0;
   }
 
+  double calcAvgDifference() {
+    double sum = 0.0;
+    for (var spot in differenceData) {
+      sum += spot.y;
+    }
+    return differenceData.isNotEmpty ? sum / differenceData.length : 0.0;
+  }
+
+  double calcAvgPrediction() {
+    double sum = 0.0;
+    for (var spot in predictionData) {
+      sum += spot.y;
+    }
+    return predictionData.isNotEmpty ? sum / predictionData.length : 0.0;
+  }
+
   double calcAccuracy() {
     double avgActual = calcAvgActual();
     double margin = avgActual * marginRate;
@@ -85,6 +101,17 @@ class RecentData {
     int marginValue = calcMargin().round();
     return NumberFormat("#,###").format(marginValue);
   }
+
+  double getLastActualValue() {
+    return actualData.isNotEmpty ? actualData.last.y : 0.0;
+  }
+
+  String getLastActualDate() {
+    return actualData.isNotEmpty
+        ? DateFormat('yyyy-MM-dd').format(
+            DateTime.fromMillisecondsSinceEpoch(actualData.last.x.toInt()))
+        : '';
+  }
 }
 
 class GraphWidget extends StatefulWidget {
@@ -105,7 +132,6 @@ class _GraphWidgetState extends State<GraphWidget> {
   void initState() {
     super.initState();
     recentData = RecentData();
-    // recentData.fetchData();
     recentData.fetchData(widget.ticker).then((_) {
       setState(() {
         recentData.actualData = recentData.actualData.reversed.toList();
@@ -141,17 +167,6 @@ class _GraphWidgetState extends State<GraphWidget> {
             padding: const EdgeInsets.all(7.0),
             child: Column(
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 8.0),
-                //   child: Text(
-                //     'Actual vs. Predicted',
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.white,
-                //       fontSize: 15),
-                //   ),
-                // ),
-
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Row(
@@ -181,14 +196,6 @@ class _GraphWidgetState extends State<GraphWidget> {
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 20,
-                            // interval: null,
-                            // getTitlesWidget: (value, meta) {
-                            //   return Text(
-                            //     formatter.format(value.toInt()),
-                            //     style: TextStyle(
-                            //         color: Colors.white, fontSize: 10),
-                            //   );
-                            // },
                           ),
                         ),
 
@@ -220,13 +227,6 @@ class _GraphWidgetState extends State<GraphWidget> {
                               );
                             },
                           ),
-
-                          // axisNameWidget: const Text(
-                          //   'Date',
-                          //   style: TextStyle(
-                          //       fontWeight: FontWeight.bold, color: Colors.white),
-                          // ),
-
                         ),
                       ),
                       borderData: FlBorderData(
@@ -236,10 +236,6 @@ class _GraphWidgetState extends State<GraphWidget> {
                           color: const Color(0xff37434d),
                           width: 2,
                         ),
-                        // border: Border(
-                        //   right:
-                        //       BorderSide(color: Colors.transparent, width: 20),
-                        // ),
                       ),
                       lineBarsData: [
                         LineChartBarData(
@@ -363,18 +359,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime? selectedDate;
   List<DocumentSnapshot> fetchedData = [];
 
-  static const Color backgroundColor = Color(0xFF181A1F);
-  static const Color calendarBackgroundColor = Colors.white;
-  static const Color calendarTextColor = Colors.white;
-  static const Color resultTextColor = Colors.white;
-
   Future<void> requestData(DateTime date) async {
     try {
       final formattedDate = DateFormat('yyyy-MM-dd').format(date);
       print('Requesting data for date: $formattedDate');
 
       final querySnapshot = await FirebaseFirestore.instance
-          .collection('ticker_test')
+          .collection('predictions')
           .where('date', isEqualTo: formattedDate)
           .get();
 
@@ -398,12 +389,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Select Date and Fetch Data'),
-      //   backgroundColor: backgroundColor,
-      // ),
       body: Container(
-        color: backgroundColor,
+        color: basicColor,
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
@@ -435,25 +422,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              // children: [
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       selectedDate = null;
-              //     });
-              //   },
-              //   child: Text('Cancel'),
-              // ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     if (selectedDate != null) {
-              //       requestData(selectedDate!);
-              //     }
-              //   },
-              //   child: Text('OK'),
             ),
-            // ],
-            // ),
             SizedBox(height: 20),
             Expanded(
               child: fetchedData.isEmpty
@@ -513,54 +482,152 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 }
 
+
 class StatsWidget extends StatelessWidget {
   final double accuracy;
-  final String margin;
+  final double errorMargin;
+  final String startDate;
+  final String endDate;
+  final double actualAverage;
+  final double differenceAverage;
+  final double predictionAverage;
+  final double lastActualValue;
+  final String lastActualDate;
 
-  StatsWidget({required this.accuracy, required this.margin});
+  StatsWidget({
+    required this.accuracy,
+    required this.errorMargin,
+    required this.startDate,
+    required this.endDate,
+    required this.actualAverage,
+    required this.differenceAverage,
+    required this.predictionAverage,
+    required this.lastActualValue,
+    required this.lastActualDate,
+  });
+
+  String formatNumber(int number) {
+    return NumberFormat('#,###').format(number);
+  }
+
+  String formatAvg(double value) {
+    int roundedValue = (value - 2).round();
+    return NumberFormat('#,###').format(roundedValue);
+  }
+
+  String formatInt(double value) {
+    return NumberFormat('#,###').format(value.round());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // constraints: BoxConstraints(maxWidth: 300, maxHeight: 300),
-      width: 200,
-      height: 150,
-      padding: EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Accuracy & Margin',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Accuracy', style: TextStyle(fontSize: 22)),
-              Text(
-                '${accuracy.toStringAsFixed(2)}%',
-                style: TextStyle(fontSize: 22, color: Color(0xFF529FC8)),
+    const double statSpacing = 18.0;
+
+    return Center(
+      child: Container(
+        width: 325,
+        height: 450,
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 28.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Statistical Info',
+              style: TextStyle(
+                fontFamily: 'Lexend',
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: infoTextColor
               ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Margin', style: TextStyle(fontSize: 22)),
-              Text(
-                '${margin}',
-                style: TextStyle(fontSize: 22, color: Color(0xFF529FC8)),
-              ),
-            ],
-          ),
-        ],
+            ),
+            SizedBox(height: 4),
+
+            Text(
+              '($startDate ~ $endDate)',
+              style: statNumStyle.copyWith(color: dateColor, fontStyle: FontStyle.italic,)
+            ),
+            SizedBox(height: 28),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Accuracy', style: statItemStyle),
+                Text(
+                  '${accuracy.toStringAsFixed(2)}%',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Error Margin', style: statItemStyle),
+                Text(
+                  '${formatInt(errorMargin)}',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Last Actual', style: statItemStyle),
+                Text(
+                  '${formatInt(lastActualValue)}',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Avg. Actual', style: statItemStyle),
+                Text(
+                  '${formatInt(actualAverage)}',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Avg. Prediction', style: statItemStyle),
+                Text(
+                  '${formatAvg(predictionAverage)}',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Avg. Difference', style: statItemStyle),
+                Text(
+                  '${formatAvg(differenceAverage)}',
+                  style: statNumStyle,
+                ),
+              ],
+            ),
+            SizedBox(height: statSpacing),
+
+          ],
+        ),
       ),
     );
   }

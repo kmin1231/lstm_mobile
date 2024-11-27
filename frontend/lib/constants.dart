@@ -7,12 +7,17 @@ const String appName = 'PrediTock';
 const Color basicColor = Color(0xFF181A1F);
 const Color mainColor = Color(0xFF9BC9E9);
 const Color elementColor = Color(0xFF32343A);
+const Color calendarBackgroundColor = Colors.white;
+const Color calendarTextColor = Colors.white;
+const Color resultTextColor = Colors.white;
 const Color progressColor = Color(0xFFCFE2F3);
 const Color tickerColor = Color(0xFF9BC9E9);
 const Color buttonColor = Color(0xFF9BC9E9);
 const Color dialogColor = Color(0xFFf6f8fb);
-const Color menuButtonColor = Color(0xFFb7b7ba);
+const Color menuButtonColor = Color(0xFFb7B7BA);
 const Color infoTextColor = Color(0xFF203139);
+const Color dateColor = Color(0xFF74B2D3);
+const Color statInfoColor = Color(0xFF74B2D3);
 
 // fonts
 final String fontTitle = 'Lexend';
@@ -82,6 +87,19 @@ final TextStyle infoMenuStyle = FontLoader.getTextStyle(
   color: infoTextColor
 );
 
+final TextStyle statItemStyle = FontLoader.getTextStyle(
+  fontName: fontTicker,
+  fontWeight: FontWeight.bold,
+  fontSize: 19,
+  color: infoTextColor
+);
+
+final TextStyle statNumStyle = FontLoader.getTextStyle(
+  fontName: fontTicker,
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+  color: statInfoColor,
+);
 
 // stock info
 const List<String> stockTickers = [

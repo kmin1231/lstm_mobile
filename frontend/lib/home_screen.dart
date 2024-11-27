@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
-import 'overview_screen.dart';
+import 'package:intl/intl.dart';
 
+import 'overview_screen.dart';
 import 'news_crawler.dart';
 import 'info_screen.dart';
 import 'constants.dart';
@@ -213,7 +214,14 @@ class _DetailScreenState extends State<DetailScreen> {
   late RecentData recentData;
 
   double accuracy = 0.0;
-  double margin = 0.0;
+  double errorMargin = 0.0;
+  double actualAverage = 0.0;
+  double differenceAverage = 0.0;
+  double predictionAverage = 0.0;
+  double lastActualValue = 0.0;
+  String lastActualDate = '';
+  String startDate = '';
+  String endDate = '';
 
   String price = ' ';
 
@@ -231,7 +239,14 @@ class _DetailScreenState extends State<DetailScreen> {
     await recentData.fetchData(widget.stockTicker);
     setState(() {
       accuracy = recentData.calcAccuracy();
-      margin = recentData.calcMargin();
+      errorMargin = recentData.calcMargin();
+      actualAverage = recentData.calcAvgActual();
+      differenceAverage = recentData.calcAvgDifference();
+      predictionAverage = recentData.calcAvgPrediction();
+      lastActualValue = recentData.getLastActualValue();
+      lastActualDate = recentData.getLastActualDate();
+      startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 60)));
+      endDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     });
   }
 
@@ -247,9 +262,8 @@ class _DetailScreenState extends State<DetailScreen> {
     setState(() {});
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: basicColor,
       appBar: AppBar(
@@ -258,7 +272,6 @@ class _DetailScreenState extends State<DetailScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Navigator.pushReplacementNamed(context, '/home');
             Navigator.pop(context);
           },
         ),
@@ -272,49 +285,48 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
       ),
       body: Column(
-        // padding: const EdgeInsets.all(16.0),
-        // child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.start,
-        // mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                children: [
-                  NewsWidget(stockName: widget.stockName),
-                  Column(
-                    children: [
-                      // Spacer(flex: 1),
-                      Expanded(flex: 14, child: GraphWidget(ticker: widget.stockTicker)),
-                      // SizedBox(height: 7),
-                      Spacer(flex: 1),
-                      Expanded(flex: 16, child: TableWidget(ticker: widget.stockTicker)),
-                      Spacer(flex: 1),
-                    ],
-                  ),
-                  CalendarWidget(),
-
-                  Center(
-                    child: SizedBox(
-                      width: 300,
-                      height: 180,
-                      child: StatsWidget(
-                        accuracy: recentData.calcAccuracy(),
-                        margin: recentData.formattedMargin(),
-                      ),
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              children: [
+                NewsWidget(stockName: widget.stockName),
+                Column(
+                  children: [
+                    Expanded(flex: 14, child: GraphWidget(ticker: widget.stockTicker)),
+                    Spacer(flex: 1),
+                    Expanded(flex: 16, child: TableWidget(ticker: widget.stockTicker)),
+                    Spacer(flex: 1),
+                  ],
+                ),
+                CalendarWidget(),
+                Center(
+                  child: SizedBox(
+                    width: 325,
+                    height: 650,
+                    child: StatsWidget(
+                      accuracy: accuracy,
+                      errorMargin: errorMargin,
+                      startDate: startDate,
+                      endDate: endDate,
+                      actualAverage: actualAverage,
+                      differenceAverage: differenceAverage,
+                      predictionAverage: predictionAverage,
+                      lastActualValue: lastActualValue,
+                      lastActualDate: lastActualDate,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
           ),
-
-          // page indicator
+          
+          // Page indicator and navigation controls
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -334,7 +346,6 @@ class _DetailScreenState extends State<DetailScreen> {
                 icon: Icon(Icons.arrow_back),
                 color: _currentPage > 0 ? buttonColor : basicColor,
               ),
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(4, (index) {
@@ -349,7 +360,6 @@ class _DetailScreenState extends State<DetailScreen> {
                   );
                 }),
               ),
-              
               IconButton(
                 onPressed: _currentPage < 3
                     ? () {
