@@ -557,7 +557,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Accuracy', style: statItemStyle),
+                Text(textAccuracy, style: statItemStyle),
                 Text(
                   '${accuracy.toStringAsFixed(2)}%',
                   style: statNumStyle,
@@ -569,7 +569,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Error Margin', style: statItemStyle),
+                Text(textMargin, style: statItemStyle),
                 Text(
                   '${formatInt(errorMargin)}',
                   style: statNumStyle,
@@ -581,7 +581,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Last Actual', style: statItemStyle),
+                Text(textLastActual, style: statItemStyle),
                 Text(
                   '${formatInt(lastActualValue)}',
                   style: statNumStyle,
@@ -593,7 +593,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Avg. Actual', style: statItemStyle),
+                Text(textAvgActual, style: statItemStyle),
                 Text(
                   '${formatInt(actualAverage)}',
                   style: statNumStyle,
@@ -605,7 +605,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Avg. Prediction', style: statItemStyle),
+                Text(textAvgPred, style: statItemStyle),
                 Text(
                   '${formatAvg(predictionAverage)}',
                   style: statNumStyle,
@@ -617,7 +617,7 @@ class StatsWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Avg. Difference', style: statItemStyle),
+                Text(textAvgDiff, style: statItemStyle),
                 Text(
                   '${formatAvg(differenceAverage)}',
                   style: statNumStyle,

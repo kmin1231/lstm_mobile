@@ -101,6 +101,23 @@ final TextStyle statNumStyle = FontLoader.getTextStyle(
   color: statInfoColor,
 );
 
+
+// StatsWidget
+// const String textAccuracy = 'Accuracy';
+// const String textMargin= 'Error Margin';
+// const String textLastActual= 'Last Actual';
+// const String textAvgActual = 'Avg. Actual';
+// const String textAvgPred = 'Avg. Prediction';
+// const String textAvgDiff = 'Avg. Difference';
+
+const String textAccuracy = '예측 정확도';
+const String textMargin= '오차 범위';
+const String textLastActual= '전일 실제 주가';
+const String textAvgActual = '평균 실제 주가';
+const String textAvgPred = '평균 예측 주가';
+const String textAvgDiff = '평균 오차';
+
+
 // stock info
 const List<String> stockTickers = [
   '005930', // 삼성전자
