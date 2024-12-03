@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Icon(Icons.info),
                       SizedBox(width: 7),
-                      Text('Dev Info', style: TextStyle(fontSize: 16, color: infoTextColor)),
+                      Text('Dev Info', style: infoMenuStyle),
                     ],
                   ),
                 ),

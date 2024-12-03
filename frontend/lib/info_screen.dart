@@ -58,7 +58,88 @@ class DevInfoDialog extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
-            SizedBox(height: 30),
+            SizedBox(height: 25),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'lib/assets/images/dart.png', 
+                  height: devInfoSize, width: devInfoSize,
+                ),
+                SizedBox(width: 17),
+                Image.asset(
+                  'lib/assets/images/javascript.png',
+                  height: devInfoSize, width: devInfoSize,
+                ),
+                SizedBox(width: 17),
+                Image.asset(
+                  'lib/assets/images/python.png',
+                  height: devInfoSize, width: devInfoSize,
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'lib/assets/images/flutter.png',
+                  height: devInfoSize, width: devInfoSize,
+                ),
+
+                SizedBox(width: 17),
+
+                Image.asset(
+                  'lib/assets/images/node.js.png',
+                  height: devInfoSize, width: devInfoSize,
+                ),
+
+                SizedBox(width: 17),
+
+                Image.asset(
+                  'lib/assets/images/firestore.png', 
+                  height: devInfoSize, width: devInfoSize,
+                ),
+
+                SizedBox(width: 17),
+
+                Image.asset(
+                  'lib/assets/images/sqlite.png',
+                  height: devInfoSize, width: devInfoSize,
+                ),
+              ],
+            ),
+
+            SizedBox(height: 50),
+
+            Text(
+              'MIT License',
+              style: TextStyle(
+                fontFamily: 'Lato',
+                fontSize: 18,
+                color: infoTextColor,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 18),
+
+            Text(
+              'Copyright (c) 2024',
+              style: TextStyle(
+                fontFamily: 'Lato',
+                fontSize: 17,
+                color: infoTextColor,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 18),
 
             GestureDetector(
               onTap: _connectGitHub,
@@ -71,7 +152,7 @@ class DevInfoDialog extends StatelessWidget {
                     'Eden Min Kim',
                     style: TextStyle(
                       fontFamily: 'Lato',
-                      fontSize: 16,
+                      fontSize: 17,
                       color: infoTextColor,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
@@ -81,7 +162,7 @@ class DevInfoDialog extends StatelessWidget {
               ),
             ),
             
-            SizedBox(height: 17),
+            SizedBox(height: 30),
             
             ElevatedButton(
               onPressed: () {

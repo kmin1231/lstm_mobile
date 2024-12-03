@@ -83,7 +83,7 @@ final TextStyle menuCtrlStyle = FontLoader.getTextStyle(
 final TextStyle infoMenuStyle = FontLoader.getTextStyle(
   fontName: fontTicker,
   fontWeight: FontWeight.bold,
-  fontSize: 16,
+  fontSize: 15,
   color: infoTextColor
 );
 
@@ -116,6 +116,10 @@ const String textLastActual= '전일 실제 주가';
 const String textAvgActual = '평균 실제 주가';
 const String textAvgPred = '평균 예측 주가';
 const String textAvgDiff = '평균 오차';
+
+
+// DevInfoDialog
+const double devInfoSize = 50;
 
 
 // stock info
