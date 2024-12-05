@@ -101,6 +101,13 @@ final TextStyle statNumStyle = FontLoader.getTextStyle(
   color: statInfoColor,
 );
 
+final TextStyle appInfoStyle = FontLoader.getTextStyle(
+  fontName: fontItem,
+  fontWeight: FontWeight.normal,
+  fontSize: 16,
+  color: infoTextColor
+);
+
 
 // StatsWidget
 // const String textAccuracy = 'Accuracy';
@@ -120,6 +127,15 @@ const String textAvgDiff = '평균 오차';
 
 // DevInfoDialog
 const double devInfoSize = 50;
+
+
+// AppInfoDialog
+const String appNameInfo = 'PREDIction + sTOCK';
+const String appInfoText = 'LSTM 알고리즘에 의한 예측 결과를\n'
+                          'KOSPI 상위 10개 종목에 대해\n '
+                          '제공하는 모바일 서비스입니다.\n';
+const String appInfoTextDetail = '최근 60일 간의 데이터를 바탕으로\n예측 결과를 다양한 형태로 표시합니다.\n';
+const String appFunctions = '종목별 최신 뉴스도 확인 가능합니다.';
 
 
 // stock info

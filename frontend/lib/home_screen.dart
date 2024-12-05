@@ -47,8 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.more_vert, color: Colors.white),
               onSelected: (value) {
                 switch (value) {
-                  case 'geninfo':
-                    Navigator.pushNamed(context, '/geninfo');
+                  case 'appinfo':
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AppInfoDialog();
+                      },
+                    );
+                    // Navigator.pushNamed(context, '/geninfo');
                     break;
                   case 'devinfo':
                     showDialog(
@@ -62,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 PopupMenuItem<String>(
-                  value: 'geninfo',
+                  value: 'appinfo',
                   child: Row(
                     children: [
                       Icon(Icons.info),
                       SizedBox(width: 7),
-                      Text('General Info', style: infoMenuStyle),
+                      Text('App Info', style: infoMenuStyle),
                     ],
                   ),
                 ),

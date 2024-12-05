@@ -5,22 +5,89 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:frontend/constants.dart';
 
 
-class GenInfoPage extends StatelessWidget {
+class AppInfoDialog extends StatelessWidget {
+  const AppInfoDialog({super.key});  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('General Info'),
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return Dialog(
+      child: Container(
+        decoration: BoxDecoration(
+          color: dialogColor,
+          borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
-      ),
+        width: MediaQuery.of(context).size.width * 0.75,
+        height: 584,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Application Info',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
 
-      body: Center(child: Text('General Info', style: TextStyle(color: Colors.white))),
+            SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(MdiIcons.finance, size: 25),
+                SizedBox(width: 10),
+                Text(
+                  'PrediTock',
+                  style: appInfoStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 15),
+            Text(appNameInfo, style: appInfoStyle.copyWith(
+              fontStyle: FontStyle.italic,
+              fontSize: 16,
+            )),
+
+            SizedBox(height: 20),
+
+            Text(
+              appInfoText,
+              textAlign: TextAlign.center,
+              style: appInfoStyle
+            ),
+
+            Text(
+              appInfoTextDetail,
+              textAlign: TextAlign.center,
+              style: appInfoStyle
+            ),
+
+            Text(
+              appFunctions,
+              textAlign: TextAlign.center,
+              style: appInfoStyle
+            ),
+
+            SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  fontFamily: 'Lexend',
+                  color: infoTextColor,
+                ),
+                ),
+            ),
+          ]
+        )
+      )
     );
   }
 }
@@ -179,6 +246,27 @@ class DevInfoDialog extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class GenInfoPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('General Info'),
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+
+      body: Center(child: Text('General Info', style: TextStyle(color: Colors.white))),
     );
   }
 }
