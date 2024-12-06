@@ -1,11 +1,11 @@
 name: Run Python LSTM Script & Update Database
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
