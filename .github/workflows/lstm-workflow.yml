@@ -19,7 +19,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t lstm-script .
+        docker build -f algorithm/Dockerfile -t lstm-script .
 
     - name: Run Docker container
       run: |
@@ -30,7 +30,7 @@ jobs:
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
         git add algorithm/lstm_predictions.sqlite3
-        git commit -m "Database Updated"
+        git commit -m "update: database file"
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
