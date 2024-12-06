@@ -5,6 +5,7 @@ pipeline {
         REPO_URL = 'https://github.com/kmin1231/lstm_mobile.git'
         GIT_CREDENTIALS = 'github-ssh-key'
         DOCKER_IMAGE_NAME = 'lstm-jenkins'
+        CONTAINER_NAME = 'lstm-jenkins-container'
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_TAG = 'latest'
     }
@@ -29,8 +30,9 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh "docker run --rm $DOCKER_IMAGE_NAME:$DOCKER_TAG"
-                    sh 'sleep 60'
+                    sh "docker run --rm --name $CONTAINER_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG &"
+                    sh "docker logs -f $CONTAINER_NAME"
+                    sh 'sleep 10'
                 }
             }
         }
