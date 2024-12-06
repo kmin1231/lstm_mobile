@@ -13,7 +13,7 @@ class RecentData {
   List<FlSpot> predictionData = [];
   List<FlSpot> differenceData = [];
 
-  final double marginRate = 0.03;
+  final double marginRate = 0.02;
 
   Future<void> fetchData(String ticker) async {
     DateTime endDate = DateTime.now();
