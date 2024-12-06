@@ -19,7 +19,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -f algorithm/Dockerfile -t lstm-script .
+        docker build -f algorithm/Dockerfile -t lstm-script algorithm/
 
     - name: Run Docker container
       run: |
