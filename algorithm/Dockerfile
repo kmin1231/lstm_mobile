@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "lstm.py"]
+CMD ["python", "lstm.py"] && tail -f /dev/null

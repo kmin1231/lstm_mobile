@@ -24,6 +24,8 @@ jobs:
     - name: Run Docker container
       run: |
         docker run --name lstm-container -d lstm-script
+        docker wait lstm-container
+        echo "Container finished with exit code $?"
 
     - name: Wait for container to start
       run: |

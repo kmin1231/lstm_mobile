@@ -29,7 +29,7 @@ start_date = '2023-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
-epochs = 5
+epochs = 2
 # epochs = 2
 batch_size = 8
 
@@ -154,7 +154,7 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
         
         results.to_sql(table_name, conn, if_exists='append', index=False)
         conn.close()
-        
+
         logger.info(f"Saving database file to: {db_path}")
 
 
