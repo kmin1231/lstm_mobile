@@ -7,7 +7,6 @@ pipeline {
         DOCKER_IMAGE_NAME = 'lstm-jenkins'
         CONTAINER_NAME = 'lstm-jenkins-container'
         DOCKER_REGISTRY = 'docker.io'
-        DOCKER_TAG = 'latest'
     }
 
     stages {
@@ -22,7 +21,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -f algorithm/Dockerfile.jenkins -t $DOCKER_IMAGE_NAME:$DOCKER_TAG ."
+                    sh "docker build -f algorithm/Dockerfile.jenkins -t $DOCKER_IMAGE_NAME . --no-cache"
                 }
             }
         }
@@ -31,7 +30,7 @@ pipeline {
             steps {
                 script {
                     sh "docker ps -a -q -f name=$CONTAINER_NAME | xargs -r docker rm -f"
-                    sh "docker run --rm --name $CONTAINER_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG"
+                    sh "docker run --rm --name $CONTAINER_NAME $DOCKER_IMAGE_NAME"
                     sh "docker logs -f $CONTAINER_NAME"
                     sh 'sleep 10'
                 }
