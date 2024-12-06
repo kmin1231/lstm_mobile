@@ -4,11 +4,12 @@ RUN apt-get update && apt-get install -y cron
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+COPY algorithm/requirements.txt /app/
 
-COPY . .
+RUN pip install --upgrade pip
+RUN pip install -r /app/requirements.txt
+
+COPY algorithm/ /app/
 
 RUN echo "0 */1 * * * python /app/lstm.py >> /var/log/cron.log 2>&1" > /etc/cron.d/lstm-cron
 
