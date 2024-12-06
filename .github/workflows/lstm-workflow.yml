@@ -28,7 +28,6 @@ jobs:
 
     - name: Wait for container to start
       run: |
-        docker start lstm-container
         sleep 10
 
     - name: Check container logs
@@ -37,6 +36,7 @@ jobs:
 
     - name: Check directory inside container
       run: |
+        docker start lstm-container
         docker exec lstm-container ls -l /app
         docker exec lstm-container ls -l /app/algorithm
 
