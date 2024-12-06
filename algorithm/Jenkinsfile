@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    environment {
+        REPO_URL = 'https://github.com/kmin1231/lstm_mobile.git'
+        GIT_CREDENTIALS = 'github-ssh-key'
+        DOCKER_IMAGE_NAME = 'lstm-jenkins'
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_TAG = 'latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    git credentialsId: GIT_CREDENTIALS, url: REPO_URL, branch: 'main'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -f algorithm/Dockerfile.jenkins -t $DOCKER_IMAGE_NAME:$DOCKER_TAG ."
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh "docker run --rm $DOCKER_IMAGE_NAME:$DOCKER_TAG"
+                    sh 'sleep 60'
+                }
+            }
+        }
+
+        stage('Push to GitHub') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-key', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                        git config --global user.name "kmin1231"
+                        git config --global user.email "kmin91143@gmail.com"
+                        git remote set-url origin git@github.com:kmin1231/lstm_mobile.git
+                        git add algorithm/*.sqlite3
+                        git commit -m "database update by Jenkins"
+                        git push origin main
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

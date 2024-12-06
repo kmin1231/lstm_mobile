@@ -1,0 +1,17 @@
+FROM python:3.10.13-slim-bullseye
+
+RUN apt-get update && apt-get install -y cron
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY . .
+
+RUN echo "0 */1 * * * python /app/lstm.py >> /var/log/cron.log 2>&1" > /etc/cron.d/lstm-cron
+
+RUN chmod 0644 /etc/cron.d/lstm-cron
+
+CMD cron && tail -f /var/log/cron.log
