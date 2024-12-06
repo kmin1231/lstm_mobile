@@ -17,24 +17,31 @@ import threading
 
 
 tickers = ['005930', '000660', '373220', '207940', '005380',
-           '005935', '068270', '000270', '105560', '005380']
+           '005935', '068270', '000270', '105560', '005490']
 
-start_date = '2015-01-01'
-# start_date = '2024-01-01'
+
+# start_date = '2015-01-01'
+start_date = '2023-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
-epochs = 100
+epochs = 5
 # epochs = 2
 batch_size = 8
 
-if platform.system() == 'Windows':
-    SAVE_DIRECTORY = "C:/Users/min/Desktop"
-else:
-    SAVE_DIRECTORY = os.path.expanduser("~/lstm_results")
+
+SAVE_DIRECTORY = os.path.join(os.path.dirname(__file__))
 
 if not os.path.exists(SAVE_DIRECTORY):
-    os.makedirs(SAVE_DIRECTORY)
+    os.makedirs(os.path.dirname(SAVE_DIRECTORY), exist_ok=True)
+
+# if platform.system() == 'Windows':
+#     SAVE_DIRECTORY = "C:/Users/min/Desktop"
+# else:
+#     SAVE_DIRECTORY = os.path.expanduser("~/lstm_results")
+
+# if not os.path.exists(SAVE_DIRECTORY):
+#     os.makedirs(SAVE_DIRECTORY)
 
 
 def prepare_data(ticker, start_date, end_date):
@@ -172,7 +179,7 @@ def process_stock(ticker):
 
     # plot_results(results, ticker)
 
-    db_path = os.path.join(SAVE_DIRECTORY, 'lstm_predictions.db')
+    db_path = os.path.join(SAVE_DIRECTORY, 'lstm_predictions')
     save_to_sqlite(results, db_name=db_path, table_name=f'predictions')
 
     abs_diff_mean = results['difference'].abs().mean()
@@ -199,7 +206,7 @@ def stock_parallel_core(tickers):
 
 
 if __name__ == '__main__':
-    results = stock_parallel_core(tickers)
+    results = stock_parallel_thread(tickers)
     
     print("\nResults:")
     for result in results:
