@@ -30,6 +30,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    sh "docker ps -a -q -f name=$CONTAINER_NAME | xargs -r docker rm -f"
                     sh "docker run --rm --name $CONTAINER_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG"
                     sh "docker logs -f $CONTAINER_NAME"
                     sh 'sleep 10'
