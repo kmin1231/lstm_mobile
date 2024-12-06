@@ -30,10 +30,6 @@ epochs = 5
 batch_size = 8
 
 
-SAVE_DIRECTORY = "/app/algorithm"
-
-
-
 # if platform.system() == 'Windows':
 #     SAVE_DIRECTORY = "C:/Users/min/Desktop"
 # else:
@@ -135,6 +131,8 @@ def plot_results(results, ticker, days=220):
 
 db_lock = threading.Lock()
 
+SAVE_DIRECTORY = "/app/algorithm"
+
 def save_to_sqlite(results, db_name, table_name='predictions'):
 
     if not os.path.exists(SAVE_DIRECTORY):
@@ -161,6 +159,7 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
         results.to_sql(table_name, conn, if_exists='append', index=False)
         conn.close()
         print(f"\nData updated to {db_name}")
+        print(f"Saving database file to: {db_path}")
 
 
 def predict_next_day_price(model, scaler, results, time_steps):
