@@ -152,13 +152,12 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
     #     counter += 1
 
     with db_lock:
-        conn = sqlite3.connect(db_name)
+        conn = sqlite3.connect(db_path)
         
         results['date'] = pd.to_datetime(results['date']).dt.date
         
         results.to_sql(table_name, conn, if_exists='append', index=False)
         conn.close()
-        print(f"\nData updated to {db_name}")
         print(f"Saving database file to: {db_path}")
 
 
