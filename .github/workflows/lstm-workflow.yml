@@ -29,8 +29,9 @@ jobs:
       run: |
         docker logs lstm-container
 
-    - name: Check container file structure
+    - name: Check directory inside container
       run: |
+        docker exec lstm-container ls -l /app
         docker exec lstm-container ls -l /app/algorithm
 
     - name: Ensure SQLite file exists

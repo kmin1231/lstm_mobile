@@ -32,8 +32,7 @@ batch_size = 8
 
 SAVE_DIRECTORY = "/app/algorithm"
 
-if not os.path.exists(SAVE_DIRECTORY):
-    os.makedirs(os.path.dirname(SAVE_DIRECTORY), exist_ok=True)
+
 
 # if platform.system() == 'Windows':
 #     SAVE_DIRECTORY = "C:/Users/min/Desktop"
@@ -137,6 +136,10 @@ def plot_results(results, ticker, days=220):
 db_lock = threading.Lock()
 
 def save_to_sqlite(results, db_name, table_name='predictions'):
+
+    if not os.path.exists(SAVE_DIRECTORY):
+        os.makedirs(SAVE_DIRECTORY)
+
     if not db_name.endswith('.sqlite3'):
         db_name += '.sqlite3'
 
