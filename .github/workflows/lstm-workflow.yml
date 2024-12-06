@@ -25,9 +25,13 @@ jobs:
       run: |
         docker run --name lstm-container -d lstm-script
 
+    - name: Wait for container to start
+      run: |
+        sleep 10
+
     - name: Check container logs
       run: |
-        docker logs lstm-container
+        docker logs -f lstm-container
 
     - name: Check directory inside container
       run: |

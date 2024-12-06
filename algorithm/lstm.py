@@ -11,6 +11,10 @@ import sqlite3
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import threading
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # import matplotlib
 # matplotlib.use('Agg')
@@ -143,14 +147,6 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
 
     db_path = os.path.join(SAVE_DIRECTORY, db_name)
 
-    # base_name = db_name.rsplit('.', 1)[0]
-    # extension = '.sqlite3'
-
-    # counter = 1
-    # while os.path.exists(db_name):
-    #     db_name = f'{base_name}({counter}){extension}'
-    #     counter += 1
-
     with db_lock:
         conn = sqlite3.connect(db_path)
         
@@ -158,7 +154,8 @@ def save_to_sqlite(results, db_name, table_name='predictions'):
         
         results.to_sql(table_name, conn, if_exists='append', index=False)
         conn.close()
-        print(f"Saving database file to: {db_path}")
+        
+        logger.info(f"Saving database file to: {db_path}")
 
 
 def predict_next_day_price(model, scaler, results, time_steps):
