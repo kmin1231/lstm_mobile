@@ -24,13 +24,12 @@ tickers = ['005930', '000660', '373220', '207940', '005380',
            '005935', '068270', '000270', '105560', '005490']
 
 
-# start_date = '2015-01-01'
-start_date = '2023-01-01'
+start_date = '2015-01-01'
+# start_date = '2023-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
-epochs = 2
-# epochs = 2
+epochs = 100
 batch_size = 8
 
 
