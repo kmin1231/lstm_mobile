@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k8s-cron
+spec:
+  schedule: "0 */3 * * *"  # every 3 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backend-container
+            image: lstm-cron
+            command:
+              - "sh"
+              - "-c"
+              - |
+                git pull origin main && \
+                npm install --prefix /app/backend && \
+                node /app/backend/app.js &  
+                sleep 10 &&
+                curl http://localhost:3200/save-recent-firestore
+          restartPolicy: OnFailure

@@ -1,0 +1,19 @@
+FROM node:20.12.2-bullseye
+
+WORKDIR /app
+
+COPY ./frontend/firebase.json /app/frontend/firebase.json
+
+RUN git init && \
+    git remote add origin https://github.com/kmin1231/lstm_mobile.git && \
+    git sparse-checkout init --cone && \
+    git sparse-checkout set backend/ algorithm/
+
+COPY backend/package.json /app/backend/package.json
+COPY backend/package-lock.json /app/backend/package-lock.json
+
+RUN npm install --prefix /app/backend
+
+COPY . .
+
+CMD ["node", "app/backend/app.js"]

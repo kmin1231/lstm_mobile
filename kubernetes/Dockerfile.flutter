@@ -1,0 +1,23 @@
+FROM dart:3.5.2-sdk AS builder
+
+RUN git clone https://github.com/flutter/flutter.git /flutter
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+WORKDIR /app
+
+COPY ../frontend/pubspec.* .
+
+RUN flutter pub get
+
+COPY /frontend .
+
+RUN flutter build apk --release
+
+# FROM ubuntu:20.04
+FROM alpine:latest
+
+COPY --from=builder /app/build/app/outputs/apk/release/app-release.apk /app/app.apk
+
+EXPOSE 8181
+
+CMD ["java", "-jar", "/app/app.apk"]

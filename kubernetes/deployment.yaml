@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flutter-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flutter-app
+  template:
+    metadata:
+      labels:
+        app: flutter-app
+    spec:
+      containers:
+      - name: flutter-app
+        image: flutter-app
+        ports:
+        - containerPort: 8181
