@@ -47,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.more_vert, color: Colors.white),
               onSelected: (value) {
                 switch (value) {
+
+                  // Application Information
                   case 'appinfo':
                     showDialog(
                       context: context,
@@ -54,8 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         return const AppInfoDialog();
                       },
                     );
-                    // Navigator.pushNamed(context, '/geninfo');
                     break;
+
+                  // Development Information
                   case 'devinfo':
                     showDialog(
                       context: context,
@@ -66,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     break;
                 }
               },
+              
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                 PopupMenuItem<String>(
                   value: 'appinfo',
@@ -77,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+
                 PopupMenuItem<String>(
                   value: 'devinfo',
                   child: Row(
@@ -93,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
+      // setting for SafeArea: NOT to overlap with status bar, button, etc.
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -175,7 +181,7 @@ class _ItemsState extends State<Items> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 0), // between ticker & stockName
+                  SizedBox(width: 0),  // between ticker & stockName
                   Expanded(
                     child: Container(
                       height: 70,

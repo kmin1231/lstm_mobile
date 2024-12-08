@@ -4,7 +4,6 @@ import 'firebase_options.dart';
 
 import 'splash_screen.dart';
 import 'home_screen.dart';
-import 'info_screen.dart';
 import 'constants.dart';
 
 void main() async {
