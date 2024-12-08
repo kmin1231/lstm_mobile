@@ -34,12 +34,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PrediTock',
       initialRoute: '/',
+
+      // page routing
       routes: {
         '/': (context) => SplashScreen(title: 'PrediTock'),
         '/home': (context) => HomeScreen(stockTicker: ''),
         '/detail': (context) => DetailScreen(stockName: '', stockTicker: ''),
-        '/geninfo': (context) => GenInfoPage(),
-        // '/devinfo': (context) => DevInfoDialog(),
       },
 
       theme: ThemeData(
