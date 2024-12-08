@@ -7,4 +7,4 @@ frontend/windows/** linguist-vendored
 frontend/linux/** linguist-vendored
 frontend/ios/** linguist-vendored
 frontend/macos/** linguist-vendored
-alfred/docs/** linguist-vendored
+alfred/doc/** linguist-vendored
