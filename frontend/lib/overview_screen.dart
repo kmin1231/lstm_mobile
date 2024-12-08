@@ -55,7 +55,7 @@ class RecentData {
   }
 
   double calcAvgActual() {
-  double sum = 0.0;
+    double sum = 0.0;
     for (var spot in actualData) {
       sum += spot.y;
     }
