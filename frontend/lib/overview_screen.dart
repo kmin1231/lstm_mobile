@@ -156,7 +156,7 @@ class _GraphWidgetState extends State<GraphWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const Color actualColor = Color(0xFFff0c8f3);
+    const Color actualColor = Color(0xFFf0c8f3);
     const Color predictionColor = Color(0xFFbdd9ee);
 
     return recentData.actualData.isEmpty
@@ -319,8 +319,12 @@ class TableWidget extends StatelessWidget {
                   DateTime date = DateTime.fromMillisecondsSinceEpoch(
                       recentData.actualData[index].x.toInt());
                   return DataRow(cells: [
-                    DataCell(Text(DateFormat('yyyy-MM-dd').format(date),
-                        style: TextStyle(color: Colors.white, fontSize: 12))),
+                    DataCell(
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(date),
+                        style: TextStyle(color: Colors.white, fontSize: 12)
+                      )
+                    ),
                     DataCell(
                       Text(
                         formatter.format(recentData.actualData[index].y),
@@ -394,13 +398,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            SizedBox(height: 5),
+            SizedBox(height: 4),
             if (selectedDate != null)
               Text(
-                'Select Date',
-                // 'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}',
-                style:
-                TextStyle(fontSize: 18, color: calendarTextColor),
+                'Selected Date: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}',
+                style: TextStyle(fontSize: 18, color: calendarTextColor),
+              )
+            else
+              Text(
+                'Select a Date',
+                style: TextStyle(fontSize: 18, color: calendarTextColor),
               ),
             SizedBox(height: 20),
             Container(
@@ -419,7 +426,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 },
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 6),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             ),
