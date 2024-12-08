@@ -3,27 +3,24 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-// const app = express();
-const port = 3000;
+const port = 3200;
 const router = express.Router();
 
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
 
 // Database Connection
-const dbPath = path.join(__dirname, '../lstm_django/merged.sqlite3');
+const dbPath = path.join(__dirname, '../algorithm/lstm_predictions.sqlite3');
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Database Connection Failure:', err.message);
     } else {
-        console.log('Connected to the database successfully!');
+        console.log('Connected to the SQLite database!');
     }
 });
 
 // Database Query
 router.get('/data/:date', (req, res) => {
-    const query = `SELECT id, actual, prediction, difference, date FROM lstm_prediction WHERE date = ?`;
+    const query = `SELECT actual, prediction, difference, date FROM predictions WHERE date = ?`;
 
     const date = req.params.date;
 
@@ -52,15 +49,5 @@ const getAllData = (callback) => {
     });
 };
 
-// app.listen(port, () => {
-//     console.log(`Server running at http://localhost:${port}`);
-// })
 
 module.exports = { router, db, getAllData };
-
-// db.close((err) => {
-//     if (err) {
-//         return console.error(err.message);
-//     }
-//     console.log('Close the database connection!');
-// });
