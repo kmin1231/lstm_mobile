@@ -19,8 +19,8 @@ class NewsWidget extends StatefulWidget {
 }
 
 class _NewsWidgetState extends State<NewsWidget> {
-  List<Map<String, String>> _news = [];  // saves title & url
-  bool _isLoading = true;  // indicates the status
+  List<Map<String, String>> _news = [];   // saves title & url
+  bool _isLoading = true;                 // indicates the status
 
   @override
   void initState() {
