@@ -1,0 +1,20 @@
+services:
+  flutter-web:
+    image: edenminkim/flutter-web-app:latest
+    container_name: flutter-web-container
+    ports:
+      - "85:85"
+    networks:
+      - flutter-alfred-net
+
+  alfred-server:
+    image: edenminkim/alfred-server:latest
+    container_name: alfred-server-container
+    ports:
+      - "8090:8090"
+    networks:
+      - flutter-alfred-net
+
+networks:
+  flutter-alfred-net:
+    driver: bridge

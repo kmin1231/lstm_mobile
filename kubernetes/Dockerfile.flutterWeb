@@ -1,0 +1,7 @@
+FROM nginx:alpine
+
+COPY ../frontend/build/web /usr/share/nginx/html
+
+EXPOSE 85
+
+CMD ["nginx", "-g", "daemon off;"]

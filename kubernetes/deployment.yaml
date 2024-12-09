@@ -1,19 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flutter-app
+  name: flutter-alfred-deployment
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: flutter-app
+      app: flutter-alfred
   template:
     metadata:
       labels:
-        app: flutter-app
+        app: flutter-alfred
     spec:
       containers:
-      - name: flutter-app
-        image: flutter-app
+      - name: flutter-web-container
+        image: edenminkim/flutter-web-app:latest
         ports:
-        - containerPort: 8181
+        - containerPort: 85
+      - name: alfred-server-container
+        image: edenminkim/alfred-server:latest
+        ports:
+        - containerPort: 8090

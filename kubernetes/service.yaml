@@ -1,13 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flutter-app-service
+  name: flutter-alfred-service
 spec:
   selector:
-    app: flutter-app
+    app: flutter-alfred
   ports:
-    - name: http
-      protocol: TCP
-      port: 82
-      targetPort: 8181
+  - name: web
+    protocol: TCP
+    port: 80
+    targetPort: 85
+  - name: alfred
+    protocol: TCP
+    port: 8090
+    targetPort: 8090
   type: LoadBalancer

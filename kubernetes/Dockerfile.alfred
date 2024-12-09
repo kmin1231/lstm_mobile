@@ -1,0 +1,19 @@
+FROM dart:stable AS build
+
+WORKDIR /app
+
+COPY ../alfred /app
+
+RUN dart pub get
+RUN dart compile exe lib/alfred.dart -o bin/server
+
+FROM debian:buster-slim
+
+WORKDIR /app
+
+COPY --from=build /runtime/ /runtime/
+COPY --from=build /app/bin/server /app/server
+
+EXPOSE 8090
+
+CMD ["./server"]
