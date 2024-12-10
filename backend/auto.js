@@ -25,6 +25,22 @@ const startNodeServer = () => {
 };
 
 
+const gitPull = () => {
+    return new Promise((resolve, reject) => {
+        console.log("Running git pull...");
+        exec('git pull origin main', { cwd: 'D:/dev/lstm_mobile' }, (err, stdout, stderr) => {
+            if (err) {
+                console.error(`Error pulling from git: ${err.message}`);
+                return reject(err);
+            }
+
+            console.log(`Git pull completed: ${stdout}`);
+            resolve(stdout);
+        });
+    });
+};
+
+
 const sendCurlRequest = async () => {
     try {
         const response = await axios.post('http://localhost:3200/sync-all-tickers');
@@ -47,6 +63,8 @@ const startSendingSyncRequest = async () => {
         cron.schedule('* * * * *', async () => {
             const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' });
             console.log(`Sync request sent at: ${timestamp}`);
+
+            await gitPull();            
             await sendCurlRequest();
         });
     } catch (error) {
