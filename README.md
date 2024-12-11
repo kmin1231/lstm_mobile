@@ -103,3 +103,19 @@ lstm_mobile
 ├── lstm_django/
 └── README.md
 ```
+
+## Development Environment
+```
+$ dart --version 
+Dart SDK version: 3.5.2 (stable) (Wed Aug 28 10:01:20 2024 +0000) on "windows_x64"
+
+$ flutter --version
+Flutter 3.24.2 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 4cf269e36d (3 months ago) • 2024-09-03 14:30:00 -0700
+Engine • revision a6bd3f1de1
+Tools • Dart 3.5.2 • DevTools 2.37.2
+```
+
+## Target Device
+- `mobile` Samsung Galaxy S22 (Android 14, API 34)
+- `mobile` emulator: Google Pixel 2 (Android 15, API 35)
