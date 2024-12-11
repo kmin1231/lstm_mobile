@@ -13,7 +13,7 @@
 
 ## Project Architecture
 
-<img src="https://drive.google.com/uc?id=1G5BloW7Rg83ZQPR8GLNRjrkROpvMBufu" alt="architecture" width=65%>
+<img src="https://drive.google.com/uc?id=1JmpUHZ7Qj-pHkpX0PjgiGLbGM9YfasvX" alt="architecture" width=75%>
 
 ## Project Structure
 ```
