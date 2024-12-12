@@ -150,7 +150,7 @@ app.get('/sync/:ticker', async (req, res) => {
 app.post('/sync-all-tickers', async (req, res) => {
     try {
         await syncAllTickersToFirestore();
-        res.status(200).send('All tickers synced to Firestore successfully!');
+        res.status(200).send('\nAll tickers synced to Firestore successfully!\n');
     } catch (error) {
         console.error('Error syncing tickers:', error);
         res.status(500).send('Failed to sync all tickers: ' + error.message);
