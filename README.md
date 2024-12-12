@@ -26,7 +26,7 @@ lstm_mobile
 │   ├── doc
 │   │   └── api
 │   ├── lib
-│   │   ├── alfred.dart             # Alfred server main file
+│   │   ├── alfred.dart                 # Alfred server main file
 │   │   ├── kis.key
 │   │   ├── news_service.dart
 │   │   └── stock_info.dart
@@ -39,27 +39,27 @@ lstm_mobile
 │   ├── Dockerfile
 │   ├── Dockerfile.jenkins
 │   ├── Jenkinsfile
-│   ├── lstm_predictions.sqlite3    # local database file
-│   ├── lstm.py                     # Python script
-│   ├── requirements.txt            # runtime environment
-│   └── stats.py                    # statistical analysis
+│   ├── lstm_predictions.sqlite3        # local database file
+│   ├── lstm.py                         # Python script
+│   ├── requirements.txt                # runtime environment
+│   └── stats.py                        # statistical analysis
 ├── backend
-│   ├── app.js                      # Node.js server main file
-│   ├── auto.js                     # automation script
+│   ├── app.js                          # Node.js server main file
+│   ├── auto.js                         # automation script
 │   ├── config.js
-│   ├── db.js                       # database connection
+│   ├── db.js                           # database connection
 │   ├── index.js
-│   ├── lstm-f254d.json             # connection to Firestore DB
+│   ├── lstm-f254d.json                 # connection to Firestore DB
 │   ├── node_modules/
 │   ├── package.json
 │   ├── package-lock.json
 │   ├── token.dat
 │   └── views
-│       └── data.ejs                # template for database query result
-├── frontend                        # Dart/Flutter
+│       └── data.ejs                    # template for database query result
+├── frontend                            # Dart/Flutter
 │   ├── analysis_options.yaml
 │   ├── android/
-│   ├── firebase.json               # connection to Firestore DB
+│   ├── firebase.json                   # connection to Firestore DB
 │   ├── frontend.iml
 │   ├── ios/
 │   ├── lib
@@ -71,7 +71,7 @@ lstm_mobile
 │   │   ├── firebase_options.dart
 │   │   ├── home_screen.dart
 │   │   ├── info_screen.dart
-│   │   ├── main.dart               # Flutter app entry point
+│   │   ├── main.dart                   # Flutter app entry point
 │   │   ├── news_crawler.dart
 │   │   ├── overview_screen.dart
 │   │   └── splash_screen.dart
@@ -118,4 +118,4 @@ Tools • Dart 3.5.2 • DevTools 2.37.2
 
 ## Target Device
 - `mobile` Samsung Galaxy S22 (Android 14, API 34)
-- `mobile` emulator: Google Pixel 2 (Android 15, API 35)
+- `mobile` Google Pixel 2 (Android 15, API 35) <i>[emulator]</i>
