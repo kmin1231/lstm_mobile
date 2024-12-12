@@ -11,6 +11,15 @@
 
 <br>
 
+## Key Features
+
+- 📰 **[News]** Stay Updated with the **Latest News**
+- 📈 **[Graph/Table]** Visualize **Actual vs. Predicted** Stock Prices
+- 📆 **[Calendar]** Explore Data by **Date**
+- 🔎 **[Stats]** Discover **Statististical Insights**
+
+<br>
+
 ## Project Architecture
 
 <img src="https://drive.google.com/uc?id=1JmpUHZ7Qj-pHkpX0PjgiGLbGM9YfasvX" alt="architecture" width=75%>
