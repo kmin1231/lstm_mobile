@@ -25,7 +25,7 @@ tickers = ['005930', '000660', '373220', '207940', '005380',
 
 
 # start_date = '2024-01-01'
-start_date = '2023-09-01'
+start_date = '2023-01-01'
 end_date = date.today().strftime('%Y-%m-%d')
 
 time_steps = 20
