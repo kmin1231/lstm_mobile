@@ -85,7 +85,6 @@ lstm_mobile
 │   │   ├── overview_screen.dart
 │   │   └── splash_screen.dart
 │   ├── linux/
-│   ├── macos/
 │   ├── pubspec.lock
 │   ├── pubspec.yaml
 │   ├── README.md
@@ -97,15 +96,6 @@ lstm_mobile
 │   │   ├── index.html
 │   │   └── manifest.json
 │   └── windows/
-├── kubernetes
-│   ├── cronjob.yaml
-│   ├── deployment.yaml
-│   ├── docker-compose.yml
-│   ├── Dockerfile.alfred
-│   ├── Dockerfile.cron
-│   ├── Dockerfile.flutter
-│   ├── Dockerfile.flutterWeb
-│   └── service.yaml
 ├── .gitattributes
 ├── .gitignore
 ├── LICENSE
