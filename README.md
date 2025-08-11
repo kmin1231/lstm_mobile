@@ -70,7 +70,6 @@ lstm_mobile
 │   ├── android/
 │   ├── firebase.json                   # connection to Firestore DB
 │   ├── frontend.iml
-│   ├── ios/
 │   ├── lib
 │   │   ├── assets
 │   │   │   ├── fonts/
@@ -84,18 +83,16 @@ lstm_mobile
 │   │   ├── news_crawler.dart
 │   │   ├── overview_screen.dart
 │   │   └── splash_screen.dart
-│   ├── linux/
 │   ├── pubspec.lock
 │   ├── pubspec.yaml
 │   ├── README.md
-│   ├── test
-│   │   └── widget_test.dart
 │   ├── web
 │   │   ├── favicon.png
 │   │   ├── icons
 │   │   ├── index.html
 │   │   └── manifest.json
-│   └── windows/
+│   └── test
+│       └── widget_test.dart
 ├── .gitattributes
 ├── .gitignore
 ├── LICENSE
